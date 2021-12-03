@@ -46,4 +46,12 @@ public class Flight {
     public int getAvailableSeats() {
         return availableSeats;
     }
+
+    public LocalTime getDepartTime() {
+        return departTime;
+    }
+
+    public LocalTime getArrivalTime() {
+        return arrivalTime;
+    }
 }

@@ -1,4 +1,4 @@
-package com.everest.airline.dto;
+package com.everest.airline;
 
 import com.everest.airline.model.Flight;
 
