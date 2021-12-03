@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+    <h1>Airline application</h1>
+    <form action="#" th:action="@{/search}" th:object="${searchForm}" method="post">
+        <label for="from">From</label>
+        <input id="from" name="from" required="required" />
+        <br />
+        <br />
+        <label for="to">To</label>
+        <input id="to" name="to" required="required" />
+        <br />
+        <br />
+        <label for="departureDate">Departure Date</label>
+        <input id="departureDate" name="departureDate"  type="date" th:value="${date}"/>
+        <br />
+        <br />
+        <input type="submit" value="Search" />
+    </form>
+</body>
+</html>

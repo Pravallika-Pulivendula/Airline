@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+    <h1>Airline application</h1>
+    <h3>Your search results</h3>
+    <table border="1">
+        <th>Number</th>
+        <th>From</th>
+        <th>To</th>
+        <th>Depart Time</th>
+        <th>Arrival Time</th>
+        <th>Available Seats</th>
+        <tr th:each="flight:${flights}">
+            <td th:text="${flight.number}"></td>
+            <td th:text="${flight.source}"></td>
+            <td th:text="${flight.destination}"></td>
+            <td th:text="${flight.departTime}"></td>
+            <td th:text="${flight.arrivalTime}"></td>
+            <td th:text="${flight.availableSeats}"></td>
+        </tr>
+    </table>
+</body>
+
+</html>
