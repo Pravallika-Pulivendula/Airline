@@ -1,8 +1,8 @@
 package com.everest.airline.controller;
 
-import com.everest.airline.Data;
 import com.everest.airline.model.Flight;
 import com.everest.airline.service.SearchService;
+import com.everest.airline.service.SeatService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +15,7 @@ import java.util.List;
 @Controller
 public class SearchController {
     SearchService searchService = new SearchService();
+    SeatService seatService = new SeatService();
     @RequestMapping(value = "/")
     public String home(Model model) {
         LocalDate date = LocalDate.now();
@@ -32,7 +33,7 @@ public class SearchController {
 
     @RequestMapping(value = "/{number}")
     public String book(@PathVariable("number") long number,Model model) throws IOException {
-        searchService.updateAvailableSeats(number);
+        seatService.updateAvailableSeats(number,searchService.getFlightData());
         return "redirect:/book";
     }
 
