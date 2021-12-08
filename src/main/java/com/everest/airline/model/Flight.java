@@ -11,16 +11,15 @@ public class Flight {
     private final LocalTime departTime;
     private final LocalTime arrivalTime;
     private int availableSeats;
-    private final int totalSeats = 900;
 
-    public Flight(long number, String source, String destination, LocalDate departureDate, LocalTime departTime, LocalTime arrivalTime) {
+    public Flight(long number, String source, String destination, LocalDate departureDate, LocalTime departTime, LocalTime arrivalTime,int availableSeats) {
         this.number = number;
         this.source = source;
         this.destination = destination;
         this.departureDate = departureDate;
         this.departTime = departTime;
         this.arrivalTime = arrivalTime;
-        this.availableSeats = totalSeats;
+        this.availableSeats = availableSeats;
     }
 
     public long getNumber() {
@@ -39,10 +38,6 @@ public class Flight {
         return destination;
     }
 
-    public int updateAvailableSeats() {
-        return availableSeats;
-    }
-
     public int getAvailableSeats() {
         return availableSeats;
     }
@@ -53,5 +48,10 @@ public class Flight {
 
     public LocalTime getArrivalTime() {
         return arrivalTime;
+    }
+
+    public int updateAvailableSeats(){
+        this.availableSeats = this.availableSeats-1;
+        return this.availableSeats;
     }
 }
