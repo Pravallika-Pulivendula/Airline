@@ -12,7 +12,7 @@ public class Flight {
     private final LocalTime arrivalTime;
     private int availableSeats;
 
-    public Flight(long number, String source, String destination, LocalDate departureDate, LocalTime departTime, LocalTime arrivalTime,int availableSeats) {
+    public Flight(long number, String source, String destination, LocalDate departureDate, LocalTime departTime, LocalTime arrivalTime, int availableSeats) {
         this.number = number;
         this.source = source;
         this.destination = destination;
@@ -50,8 +50,7 @@ public class Flight {
         return arrivalTime;
     }
 
-    public int updateAvailableSeats(){
-        this.availableSeats = this.availableSeats-1;
-        return this.availableSeats;
+    public void updateAvailableSeats() {
+        this.availableSeats = this.availableSeats - 1;
     }
 }

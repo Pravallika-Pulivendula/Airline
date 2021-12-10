@@ -1,6 +1,6 @@
 1001,Hyderabad,Bangalore,2021-12-02,02:30,02:30,90
-1002,Bangalore,Hyderabad,2021-12-04,02:40,03:20,4
+1002,Bangalore,Hyderabad,2021-12-04,02:40,03:20,88
 1003,Goa,Bangalore,2021-12-05,06:20,00:30,90
 1004,Bangalore,Goa,2021-12-03,00:01,02:30,90
-1005,Bangalore,Hyderabad,2021-12-04,02:45,03:20,72
+1005,Bangalore,Hyderabad,2021-12-04,02:45,03:20,89
 1006,Hyderabad,Bangalore,2021-12-03,01:20,03:29,90

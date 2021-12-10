@@ -1,23 +1,23 @@
 package com.everest.airline;
 
-import com.everest.airline.model.Flight;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class Data {
-//    static List<Flight> flights = List.of(
-//            new Flight(1001, "Hyderabad", "Bangalore",LocalDate.of(2021,12,2), LocalTime.of(2,30),LocalTime.of(2,30)),
-//            new Flight(1002, "Bangalore", "Hyderabad",LocalDate.of(2021,12,4),LocalTime.of(2,40),LocalTime.of(3,20)),
-//            new Flight(1003, "Goa", "Bangalore",LocalDate.of(2021,12,5),LocalTime.of(6,20),LocalTime.of(0,30)),
-//            new Flight(1004, "Bangalore", "Goa",LocalDate.of(2021,12,3),LocalTime.of(0,1),LocalTime.of(2,30)),
-//            new Flight(1005, "Bangalore", "Hyderabad",LocalDate.of(2021,12,2),LocalTime.of(2,45),LocalTime.of(3,20)),
-//            new Flight(1006, "Hyderabad", "Bangalore",LocalDate.of(2021,12,3),LocalTime.of(1,20),LocalTime.of(3,29)));
-//
-//    public static List<Flight> getFlights() {
-//        return flights;
-//    }
+    static String filePath = "/Users/Pravallika/Documents/Assignments/airlines/src/main/java/com/everest/airline/flights";
+    static File directory = new File(filePath);
 
-
+    public static void writeDataToFile(long number, String toReplace, String toBeReplaced) throws IOException {
+        File[] files = directory.listFiles((File pathname) -> pathname.getName().equals(String.valueOf(number)));
+        String content;
+        assert files != null;
+        File file = new File(files[0].getPath());
+        content = Files.readString(Path.of(file.getPath()), Charset.defaultCharset());
+        content = content.replaceAll(toReplace, toBeReplaced);
+        Files.write(Path.of(file.getPath()), content.getBytes(StandardCharsets.UTF_8));
+    }
 }
