@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
@@ -27,6 +28,7 @@ public class SearchController {
     SeatService seatService;
     private List<Flight> flights;
 
+
     @RequestMapping(value = "/")
     public String home(Model model) {
         LocalDate date = LocalDate.now();
@@ -36,7 +38,6 @@ public class SearchController {
 
 
     @RequestMapping(value = "/search")
-    @ExceptionHandler({FlightsNotFoundException.class})
     public String search(String from, String to, String departureDate, Model model) throws IOException {
         flights = searchService.searchFlights(from, to, departureDate);
         if (flights.size() == 0) return "redirect:/no-flights-found";
@@ -45,10 +46,10 @@ public class SearchController {
     }
 
     @RequestMapping(value = "/{number}")
-    public String book(@PathVariable("number") long number, Model model) throws IOException {
+    public String book(@PathVariable("number") long number,int noOfPassengers) throws IOException {
         flights = flights.stream().filter(flight -> flight.getAvailableSeats() != 0).collect(Collectors.toList());
         if (flights.size() == 0) return "redirect:/no-flights-found";
-        seatService.updateAvailableSeats(number, flights);
+        seatService.updateAvailableSeats(number,noOfPassengers,flights);
         return "redirect:/book";
     }
 

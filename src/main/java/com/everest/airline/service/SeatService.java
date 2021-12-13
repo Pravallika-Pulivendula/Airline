@@ -11,11 +11,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class SeatService {
 
-    public void updateAvailableSeats(long number, List<Flight> flightsData) throws IOException {
+    public void updateAvailableSeats(long number, int noOfPassengers,List<Flight> flightsData) throws IOException {
         Flight flights = flightsData.stream().filter(flight -> flight.getNumber() == number)
                 .collect(Collectors.toList()).get(0);
         String toReplace = flights.getNumber() + "," + flights.getSource() + "," + flights.getDestination() + "," + flights.getDepartureDate() + "," + flights.getDepartTime() + "," + flights.getArrivalTime() + "," + flights.getAvailableSeats();
-        flights.updateAvailableSeats();
+        flights.updateAvailableSeats(noOfPassengers);
         String toBeReplaced = flights.getNumber() + "," + flights.getSource() + "," + flights.getDestination() + "," + flights.getDepartureDate() + "," + flights.getDepartTime() + "," + flights.getArrivalTime() + "," + flights.getAvailableSeats();
         Data.writeDataToFile(number,toReplace,toBeReplaced);
     }

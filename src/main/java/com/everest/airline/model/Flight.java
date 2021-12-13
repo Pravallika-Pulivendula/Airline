@@ -50,7 +50,7 @@ public class Flight {
         return arrivalTime;
     }
 
-    public void updateAvailableSeats() {
-        this.availableSeats = this.availableSeats - 1;
+    public void updateAvailableSeats(int noOfPassengers) {
+        this.availableSeats = this.availableSeats - noOfPassengers;
     }
 }
