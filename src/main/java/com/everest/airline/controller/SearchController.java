@@ -5,10 +5,13 @@ import com.everest.airline.model.Flight;
 import com.everest.airline.service.SearchService;
 import com.everest.airline.service.SeatService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -31,26 +34,29 @@ public class SearchController {
         return "home";
     }
 
+
     @RequestMapping(value = "/search")
+    @ExceptionHandler({FlightsNotFoundException.class})
     public String search(String from, String to, String departureDate, Model model) throws IOException {
         flights = searchService.searchFlights(from, to, departureDate);
-        System.out.println(flights);
-        if (flights.size() == 0) throw new FlightsNotFoundException("No flights found");
+        if (flights.size() == 0) return "redirect:/no-flights-found";
         model.addAttribute("flights", flights);
         return "search";
     }
 
     @RequestMapping(value = "/{number}")
     public String book(@PathVariable("number") long number, Model model) throws IOException {
-        if(flights == null) throw new FlightsNotFoundException("No flights found");
-        seatService.updateAvailableSeats(number, flights.stream().filter(flight -> flight.getAvailableSeats() != 0).collect(Collectors.toList()));
+        flights = flights.stream().filter(flight -> flight.getAvailableSeats() != 0).collect(Collectors.toList());
+        if (flights.size() == 0) return "redirect:/no-flights-found";
+        seatService.updateAvailableSeats(number, flights);
         return "redirect:/book";
     }
 
     @RequestMapping(value = "/book")
     public String bookTicket(Model model) {
-        if(flights == null) throw new FlightsNotFoundException("No flights found");
-        model.addAttribute("flights", flights.stream().filter(flight -> flight.getAvailableSeats() != 0).collect(Collectors.toList()));
+        flights = flights.stream().filter(flight -> flight.getAvailableSeats() != 0).collect(Collectors.toList());
+        if (flights.size() == 0) return "redirect:/no-flights-found";
+        model.addAttribute("flights", flights);
         return "search";
     }
 }
