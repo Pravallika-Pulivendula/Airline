@@ -25,7 +25,7 @@ public class SearchService {
         for (File eachFile : directoryListing) {
             flightDetails = new Scanner(new File(eachFile.getPath())).useDelimiter("\\Z").next().split(",");
             if (flightDetails[1].equals(from) && flightDetails[2].equals(to) && flightDetails[3].equals(departureDate) && Integer.parseInt(flightDetails[6])!=0)
-                flightData.add(new Flight(Long.parseLong(flightDetails[0]), flightDetails[1], flightDetails[2], LocalDate.parse(flightDetails[3]), LocalTime.parse(flightDetails[4]), LocalTime.parse(flightDetails[5]), Integer.parseInt(flightDetails[6])));
+                flightData.add(new Flight(Long.parseLong(flightDetails[0]), flightDetails[1], flightDetails[2], LocalDate.parse(flightDetails[3]), LocalTime.parse(flightDetails[4]), LocalTime.parse(flightDetails[5]), Integer.parseInt(flightDetails[6]),Integer.parseInt(flightDetails[7]),Integer.parseInt(flightDetails[8]),Integer.parseInt(flightDetails[9])));
         }
         return flightData;
     }
