@@ -18,7 +18,7 @@
         <br />
         <br />
         <label for="departureDate">Departure Date</label>
-        <input id="departureDate" name="departureDate"  type="date" th:value="${date}"/>
+        <input id="departureDate" name="departureDate"  type="date" th:value="${date}" th:min="${date}"/>
         <br />
         <br />
         <input type="submit" value="Search" />

@@ -16,9 +16,12 @@
         <th>Depart Time</th>
         <th>Arrival Time</th>
         <th>Available Seats</th>
+        <th>EconomicClass Seats</th>
+        <th>FirstClass Seats</th>
+        <th>SecondClass Seats</th>
         <th>No of Passengers</th>
-        <th>Book Ticket</th>
         <th>Class Type</th>
+        <th>Book Ticket</th>
         <tr th:each="flight:${flights}">
             <td th:text="${flight.number}" id="number"></td>
             <td th:text="${flight.source}"></td>
@@ -26,19 +29,20 @@
             <td th:text="${flight.departTime}"></td>
             <td th:text="${flight.arrivalTime}"></td>
             <td th:text="${flight.availableSeats}"></td>
+            <td th:text="${flight.economicClassSeats}"></td>
+            <td th:text="${flight.firstClassSeats}"></td>
+            <td th:text="${flight.secondClassSeats}"></td>
             <form th:action="@{'/' + ${flight.number}}" th:method="post">
                 <td><input id="noOfPassengers" name="noOfPassengers"  type="number" required="required"></td>
                 <td>
-                    <select id="classType">
-                        <option>Economic</option>
-                        <option>Second</option>
-                        <option>First</option>
+                    <select id="classType" name="classType">
+                        <option th:each="type: ${classType}"
+                                th:value="${type}"
+                                th:text="${type}"></option>
                     </select>
                 </td>
                 <td><input type="submit" value="Book Ticket"></td>
             </form>
-
-
         </tr>
     </table>
 </body>
