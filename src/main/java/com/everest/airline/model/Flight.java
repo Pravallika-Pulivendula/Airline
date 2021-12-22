@@ -1,16 +1,13 @@
 package com.everest.airline.model;
 
+import com.everest.airline.enums.ClassType;
 import com.everest.airline.service.SeatService;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
 public class Flight {
-    private final int economicSeats = 50;
-    private final int firstSeats = 10;
-    private final int secondSeats = 30;
     private final Long number;
     private final String source;
     private final String destination;
@@ -25,6 +22,8 @@ public class Flight {
     private final double firstClassBasePrice;
     private final double secondClassBasePrice;
     private double pricePerSeat;
+
+    ClassType classType;
 
     public Flight(Long number, String source, String destination, LocalDate departureDate, LocalTime departTime, LocalTime arrivalTime, int availableSeats, int firstClassSeats, int secondClassSeats, int economicClassSeats, double firstClassBasePrice, double secondClassBasePrice, double economicClassBasePrice) {
         this.number = number;
@@ -70,11 +69,11 @@ public class Flight {
         return arrivalTime;
     }
 
-    public void updateSeats(int noOfPassengers, String classType) {
+    public void updateSeats(int noOfPassengers, ClassType classType) {
         this.availableSeats = this.availableSeats - noOfPassengers;
-        if (classType.equals("Economic")) this.economicClassSeats = this.economicClassSeats - noOfPassengers;
-        if (classType.equals("First")) this.firstClassSeats = this.firstClassSeats - noOfPassengers;
-        if (classType.equals("Second")) this.secondClassSeats = this.secondClassSeats - noOfPassengers;
+        if (classType == ClassType.Economic) this.economicClassSeats = this.economicClassSeats - noOfPassengers;
+        if (classType == ClassType.First) this.firstClassSeats = this.firstClassSeats - noOfPassengers;
+        if (classType == ClassType.Second) this.secondClassSeats = this.secondClassSeats - noOfPassengers;
     }
 
     public int getEconomicClassSeats() {
@@ -101,24 +100,27 @@ public class Flight {
         return secondClassBasePrice;
     }
 
-    public double getClassTypeSeatsPrice(String classType) {
-        if (classType.equals("Economic")) return getEconomicClassBasePrice();
-        if (classType.equals("First")) return getFirstClassBasePrice();
-        if (classType.equals("Second")) return getSecondClassBasePrice();
+    public double getClassTypeSeatsPrice(ClassType classType) {
+        if(classType == ClassType.Economic) return getEconomicClassBasePrice();
+        if (classType == ClassType.First) return getFirstClassBasePrice();
+        if (classType == ClassType.Second) return getSecondClassBasePrice();
         return 0;
     }
 
-    public double getClassTypeSeats(String classType) {
-        if (classType.equals("Economic")) return economicSeats;
-        if (classType.equals("First")) return firstSeats;
-        if (classType.equals("Second")) return secondSeats;
+    public double getClassTypeSeats(ClassType classType) {
+        int economicSeats = 50;
+        if (classType == ClassType.Economic) return economicSeats;
+        int firstSeats = 10;
+        if (classType == ClassType.First) return firstSeats;
+        int secondSeats = 30;
+        if (classType == ClassType.Second) return secondSeats;
         return 0;
     }
 
-    public int getNoOfClassTypeSeats(String classType) {
-        if (classType.equals("Economic")) return getEconomicClassSeats();
-        if (classType.equals("First")) return getFirstClassSeats();
-        if (classType.equals("Second")) return getSecondClassSeats();
+    public int getNoOfClassTypeSeats(ClassType classType) {
+        if (classType == ClassType.Economic) return getEconomicClassSeats();
+        if (classType == ClassType.First) return getFirstClassSeats();
+        if (classType == ClassType.Second) return getSecondClassSeats();
         return 0;
     }
 
@@ -139,15 +141,15 @@ public class Flight {
     }
 
     public double extraChargeBasedOnSeats(String classType, SeatService seatService) {
-        double basePrice = getClassTypeSeatsPrice(classType);
+        double basePrice = getClassTypeSeatsPrice(ClassType.valueOf(classType));
         double extraCharge = 0;
-        double totalSeats = getClassTypeSeats(classType);
-        int noOfSeats = getNoOfClassTypeSeats(classType);
+        double totalSeats = getClassTypeSeats(ClassType.valueOf(classType));
+        int noOfSeats = getNoOfClassTypeSeats(ClassType.valueOf(classType));
         return seatService.getPriceBasedOnSeatType(basePrice, extraCharge, totalSeats, noOfSeats);
     }
 
     public void calculatePricePerSeat(String classType, SeatService seatService) {
-        double basePrice = getClassTypeSeatsPrice(classType);
+        double basePrice = getClassTypeSeatsPrice(ClassType.valueOf(classType));
         double extraChargeBasedOnSeats = extraChargeBasedOnSeats(classType, seatService);
         double extraChargeBasedOnDate = extraChargeBasedOnDate(seatService);
         double pricePerSeat = basePrice + extraChargeBasedOnSeats + extraChargeBasedOnDate;

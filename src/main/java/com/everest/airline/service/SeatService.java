@@ -1,6 +1,7 @@
 package com.everest.airline.service;
 
 import com.everest.airline.Data;
+import com.everest.airline.enums.ClassType;
 import com.everest.airline.model.Flight;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,7 +16,7 @@ public class SeatService {
 
     public void updateAvailableSeats(long number, int noOfPassengers, String classType, Flight flight) throws IOException {
         String toReplace = flight.getAvailableSeats() + "," + flight.getFirstClassSeats() + "," + flight.getSecondClassSeats() + "," + flight.getEconomicClassSeats();
-        flight.updateSeats(noOfPassengers, classType);
+        flight.updateSeats(noOfPassengers, ClassType.valueOf(classType));
         String toBeReplaced = flight.getAvailableSeats() + "," + flight.getFirstClassSeats() + "," + flight.getSecondClassSeats() + "," + flight.getEconomicClassSeats();
         data.writeDataToFile(number, toReplace, toBeReplaced);
     }
