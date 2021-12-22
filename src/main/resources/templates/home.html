@@ -21,6 +21,16 @@
         <input id="departureDate" name="departureDate"  type="date" th:value="${date}" th:min="${date}"/>
         <br />
         <br />
+        <label for="noOfPassengers">No of Passengers</label>
+        <input id="noOfPassengers" name="noOfPassengers"  type="number" required="required">
+        <br/>
+        <br/>
+        <label for="classType">Class Type</label>
+        <select id="classType" name="classType">
+            <option th:value="Economic">Economic</option>
+            <option th:value="First">First</option>
+            <option th:value="Second">Second</option>
+        </select>
         <input type="submit" value="Search" />
     </form>
 </body>

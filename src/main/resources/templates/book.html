@@ -1,10 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>Booked details</title>
+    <meta charset="UTF-8">
 </head>
-<body>
-$END$
+<body th:each="flight:${flights}">
+<h1>Booking Confirmation</h1>
+<h3>Congratulations! Your flight booking is confirmed. Following are the details of your booked flight.</h3>
+<table>
+    <tr>
+        <td>Flight Number</td>
+        <td th:text="${flight.number}"></td>
+    </tr>
+    <tr>
+        <td>From</td>
+        <td th:text="${flight.source}"></td>
+    </tr>
+    <tr>
+        <td>To</td>
+        <td th:text="${flight.destination}"></td>
+    </tr>
+    <tr>
+        <td>Depart Time</td>
+        <td th:text="${flight.departTime}"></td>
+    </tr>
+    <tr>
+        <td>Arrival Time</td>
+        <td th:text="${flight.arrivalTime}"></td>
+    </tr>
+    <tr>
+        <td>No of Passengers</td>
+        <td th:text="${noOfPassengers}"></td>
+    </tr>
+    <tr>
+        <td>Class Type</td>
+        <td th:text="${classType}"></td>
+    </tr>
+    <tr>
+        <td>Price per seat</td>
+        <td th:text="${flight.pricePerSeat}"></td>
+    </tr>
+    <tr>
+        <td>Total Price</td>
+        <td th:text="${#numbers.formatDecimal(flight.pricePerSeat * noOfPassengers,0,2)}"></td>
+    </tr>
+</table>
+<br/>
+<a th:href="@{'/'}">Go to home</a>
 </body>
 </html>

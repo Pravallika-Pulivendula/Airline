@@ -2,37 +2,64 @@ package com.everest.airline.service;
 
 import com.everest.airline.Data;
 import com.everest.airline.model.Flight;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 
 @Component
 public class SeatService {
-    String filePath = "/Users/Pravallika/Documents/Assignments/airlines/src/main/java/com/everest/airline/flights";
-    File directory = new File(filePath);
-    public double updateAvailableSeats(long number, int noOfPassengers,String classType,List<Flight> flightsData) throws IOException {
-        Flight flights = flightsData.stream().filter(flight -> flight.getNumber() == number).collect(Collectors.toList()).get(0);
-        String toReplace = flights.getAvailableSeats()+","+ flights.getFirstClassSeats()+","+ flights.getSecondClassSeats()+","+ flights.getEconomicClassSeats();
-        flights.updateAvailableSeats(noOfPassengers);
-        double totalFair = filterSeats(noOfPassengers,classType,flights);
-        String toBeReplaced = flights.getAvailableSeats()+","+ flights.getFirstClassSeats()+","+ flights.getSecondClassSeats()+","+ flights.getEconomicClassSeats();
-        Data.writeDataToFile(number,toReplace,toBeReplaced);
-        return totalFair;
+    @Autowired
+    Data data;
+
+    public void updateAvailableSeats(long number, int noOfPassengers, String classType, Flight flights) throws IOException {
+        String toReplace = flights.getAvailableSeats() + "," + flights.getFirstClassSeats() + "," + flights.getSecondClassSeats() + "," + flights.getEconomicClassSeats();
+        flights.updateSeats(noOfPassengers, classType);
+        String toBeReplaced = flights.getAvailableSeats() + "," + flights.getFirstClassSeats() + "," + flights.getSecondClassSeats() + "," + flights.getEconomicClassSeats();
+        data.writeDataToFile(number, toReplace, toBeReplaced);
     }
 
-    public double filterSeats(int noOfPassengers,String classType,Flight flight)
-    {
-        double totalFair = 0;
-        if(classType.equals("Economic")) totalFair = flight.updateEconomicClassSeats(noOfPassengers);
-        if(classType.equals("First")) totalFair =flight.updateFirstClassSeats(noOfPassengers);
-        if(classType.equals("Second")) totalFair = flight.updateSecondClassSeats(noOfPassengers);
-        return totalFair;
+    public void calculatePricePerSeat(Flight flights, String classType) {
+        double basePrice = flights.getClassTypeSeatsPrice(classType);
+        double extraChargeBasedOnSeats = calculatePriceBasedOnSeats(flights, classType);
+        double extraChargeBasedOnDate = calculatePriceBasedOnDate(flights);
+        double pricePerSeat = basePrice + extraChargeBasedOnSeats + extraChargeBasedOnDate;
+        flights.setPricePerSeat(pricePerSeat);
     }
+
+    public void setPricePerSeatForEachFlight(ArrayList<Flight> flights, String classType) {
+        for (Flight flight : flights) {
+            calculatePricePerSeat(flight, classType);
+        }
+    }
+
+    public double calculatePriceBasedOnSeats(Flight flight, String classType) {
+        double basePrice = flight.getClassTypeSeatsPrice(classType);
+        double extraCharge = 0;
+        double totalSeats = flight.getClassTypeSeats(classType);
+        int noOfSeats = flight.getNoOfClassTypeSeats(classType);
+        if (noOfSeats > totalSeats - (totalSeats * 30) / 100 && noOfSeats < totalSeats) extraCharge = 0;
+        else if (noOfSeats > totalSeats - (totalSeats * 50) / 100 && noOfSeats < totalSeats - (totalSeats * 30) / 100)
+            extraCharge = (basePrice * 20) / 100;
+        else if (noOfSeats > totalSeats - (totalSeats * 75) / 100 && noOfSeats < totalSeats - (totalSeats * 50) / 100)
+            extraCharge = (basePrice * 35) / 100;
+        else if (noOfSeats < totalSeats - (totalSeats * 75) / 100 && noOfSeats > 0)
+            extraCharge = (basePrice * 50) / 100;
+        return extraCharge;
+    }
+
+    public double calculatePriceBasedOnDate(Flight flight) {
+        double extraCharge = 0;
+        LocalDate date = flight.getDepartureDate();
+        LocalDate currentDate = LocalDate.now();
+        long days = ChronoUnit.DAYS.between(currentDate, date);
+        if (days > 10 && days <= 15) extraCharge = 0;
+        else if (days < 10 && days > 3) extraCharge = (double) (days * 2) / 100;
+        else if (days < 3 && days > 0) extraCharge = (double) (days * 10) / 100;
+        return extraCharge;
+    }
+
 }

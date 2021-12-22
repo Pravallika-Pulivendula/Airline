@@ -4,6 +4,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class Flight {
+    private final int economicSeats = 50;
+    private final int firstSeats = 10;
+    private final int secondSeats = 30;
     private final Long number;
     private final String source;
     private final String destination;
@@ -17,9 +20,9 @@ public class Flight {
     private final double economicClassBasePrice;
     private final double firstClassBasePrice;
     private final double secondClassBasePrice;
-    private double totalFair = 0;
+    private double pricePerSeat;
 
-    public Flight(Long number, String source, String destination, LocalDate departureDate, LocalTime departTime, LocalTime arrivalTime, int availableSeats, int firstClassSeats, int secondClassSeats, int economicClassSeats,double firstClassBasePrice,double secondClassBasePrice,double economicClassBasePrice) {
+    public Flight(Long number, String source, String destination, LocalDate departureDate, LocalTime departTime, LocalTime arrivalTime, int availableSeats, int firstClassSeats, int secondClassSeats, int economicClassSeats, double firstClassBasePrice, double secondClassBasePrice, double economicClassBasePrice) {
         this.number = number;
         this.source = source;
         this.destination = destination;
@@ -31,7 +34,7 @@ public class Flight {
         this.secondClassSeats = secondClassSeats;
         this.firstClassSeats = firstClassSeats;
         this.economicClassBasePrice = economicClassBasePrice;
-        this.firstClassBasePrice =firstClassBasePrice;
+        this.firstClassBasePrice = firstClassBasePrice;
         this.secondClassBasePrice = secondClassBasePrice;
     }
 
@@ -63,8 +66,11 @@ public class Flight {
         return arrivalTime;
     }
 
-    public void updateAvailableSeats(int noOfPassengers) {
+    public void updateSeats(int noOfPassengers, String classType) {
         this.availableSeats = this.availableSeats - noOfPassengers;
+        if (classType.equals("Economic")) this.economicClassSeats = this.economicClassSeats - noOfPassengers;
+        if (classType.equals("First")) this.firstClassSeats = this.firstClassSeats - noOfPassengers;
+        if (classType.equals("Second")) this.secondClassSeats = this.secondClassSeats - noOfPassengers;
     }
 
     public int getEconomicClassSeats() {
@@ -79,28 +85,6 @@ public class Flight {
         return firstClassSeats;
     }
 
-    public double updateEconomicClassSeats(int noOfPassengers)
-    {
-        this.economicClassSeats = this.economicClassSeats - noOfPassengers;
-        totalFair = noOfPassengers * this.getEconomicClassBasePrice();
-        return totalFair;
-
-    }
-
-    public double updateFirstClassSeats(int noOfPassengers)
-    {
-        this.firstClassSeats = this.firstClassSeats - noOfPassengers;
-        totalFair = noOfPassengers * this.getFirstClassBasePrice();
-        return totalFair;
-    }
-
-    public double updateSecondClassSeats(int noOfPassengers)
-    {
-        this.secondClassSeats = this.secondClassSeats - noOfPassengers;
-        totalFair = noOfPassengers * this.getSecondClassBasePrice();
-        return totalFair;
-    }
-
     public double getEconomicClassBasePrice() {
         return economicClassBasePrice;
     }
@@ -112,4 +96,34 @@ public class Flight {
     public double getSecondClassBasePrice() {
         return secondClassBasePrice;
     }
+
+    public double getClassTypeSeatsPrice(String classType) {
+        if (classType.equals("Economic")) return getEconomicClassBasePrice();
+        if (classType.equals("First")) return getFirstClassBasePrice();
+        if (classType.equals("Second")) return getSecondClassBasePrice();
+        return 0;
+    }
+
+    public double getClassTypeSeats(String classType) {
+        if (classType.equals("Economic")) return economicSeats;
+        if (classType.equals("First")) return firstSeats;
+        if (classType.equals("Second")) return secondSeats;
+        return 0;
+    }
+
+    public int getNoOfClassTypeSeats(String classType) {
+        if (classType.equals("Economic")) return getEconomicClassSeats();
+        if (classType.equals("First")) return getFirstClassSeats();
+        if (classType.equals("Second")) return getSecondClassSeats();
+        return 0;
+    }
+
+    public void setPricePerSeat(double pricePerSeat) {
+        this.pricePerSeat = pricePerSeat;
+    }
+
+    public double getPricePerSeat() {
+        return pricePerSeat;
+    }
+
 }
