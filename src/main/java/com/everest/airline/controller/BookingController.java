@@ -21,8 +21,8 @@ public class BookingController {
     @RequestMapping(value = "/{number}/{noOfPassengers}/{classType}/{pricePerSeat}")
     public String book(@PathVariable("number") long number, @PathVariable("noOfPassengers") int noOfPassengers, @PathVariable("classType") String classType, @PathVariable("pricePerSeat") double pricePerSeat, Model model) throws IOException {
         Flight flight = data.getDataFromFile(number);
-        seatService.calculatePriceBasedOnDate(flight);
-        seatService.updateAvailableSeats(number, noOfPassengers, classType, flight);
+        flight.extraChargeBasedOnDate(seatService);
+        seatService.updateAvailableSeats(number, noOfPassengers, classType,flight);
         return "redirect:/book/{number}/{noOfPassengers}/{classType}/{pricePerSeat}";
     }
 

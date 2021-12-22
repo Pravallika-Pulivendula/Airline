@@ -4,12 +4,14 @@ package com.everest.airline.controller;
 import com.everest.airline.Data;
 import com.everest.airline.model.Flight;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 @RestController
 public class FlightController {
@@ -21,21 +23,12 @@ public class FlightController {
 
     @GetMapping("/flights")
     public ArrayList<Flight> getAllFlights() throws IOException {
-        return data.readDataFromFiles();
+        return data.readDataFromAllFiles();
     }
 
     @GetMapping("/flights/{number}")
     public Flight getFlight(@PathVariable("number") long number) throws IOException {
         return data.getDataFromFile(number);
-    }
-
-    @PostMapping("/flights/add")
-    public void addFlights(String source, String destination) {
-        File[] files = directory.listFiles();
-        assert files != null;
-        Arrays.sort(files);
-        long number = Long.parseLong(files[files.length - 1].getName());
-        System.out.println(number);
     }
 
     @DeleteMapping("/flights/{number}")

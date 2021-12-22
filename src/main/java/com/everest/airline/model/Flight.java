@@ -1,7 +1,11 @@
 package com.everest.airline.model;
 
+import com.everest.airline.service.SeatService;
+
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 
 public class Flight {
     private final int economicSeats = 50;
@@ -124,6 +128,30 @@ public class Flight {
 
     public double getPricePerSeat() {
         return pricePerSeat;
+    }
+
+    public double extraChargeBasedOnDate(SeatService seatService) {
+        double extraCharge = 0;
+        LocalDate date = getDepartureDate();
+        LocalDate currentDate = LocalDate.now();
+        long days = ChronoUnit.DAYS.between(currentDate, date);
+        return seatService.getPricePerSeatBasedOnDays(extraCharge, days);
+    }
+
+    public double extraChargeBasedOnSeats(String classType, SeatService seatService) {
+        double basePrice = getClassTypeSeatsPrice(classType);
+        double extraCharge = 0;
+        double totalSeats = getClassTypeSeats(classType);
+        int noOfSeats = getNoOfClassTypeSeats(classType);
+        return seatService.getPriceBasedOnSeatType(basePrice, extraCharge, totalSeats, noOfSeats);
+    }
+
+    public void calculatePricePerSeat(String classType, SeatService seatService) {
+        double basePrice = getClassTypeSeatsPrice(classType);
+        double extraChargeBasedOnSeats = extraChargeBasedOnSeats(classType, seatService);
+        double extraChargeBasedOnDate = extraChargeBasedOnDate(seatService);
+        double pricePerSeat = basePrice + extraChargeBasedOnSeats + extraChargeBasedOnDate;
+        setPricePerSeat(pricePerSeat);
     }
 
 }
