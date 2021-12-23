@@ -2,7 +2,7 @@ package com.everest.airline.controller;
 
 import com.everest.airline.model.Flight;
 import com.everest.airline.service.SearchService;
-import com.everest.airline.service.SeatService;
+import com.everest.airline.service.PricingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,7 +18,7 @@ public class SearchController {
     @Autowired
     SearchService searchService;
     @Autowired
-    SeatService seatService;
+    PricingService seatService;
 
     @RequestMapping(value = "/")
     public String home(Model model) {

@@ -1,6 +1,7 @@
 package com.everest.airline.service;
 
-import com.everest.airline.Data;
+import com.everest.airline.DataHandler;
+import com.everest.airline.enums.ClassType;
 import com.everest.airline.model.Flight;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,26 +16,26 @@ import java.util.stream.Collectors;
 @Component
 public class SearchService {
     @Autowired
-    Data data;
+    DataHandler data;
 
-    private final File directory = new File("/Users/Pravallika/Documents/Assignments/airlines/src/main/java/com/everest/airline/flights");
-    private final File[] directoryListing = directory.listFiles();
+    File directory = new File("src/main/java/com/everest/airline/flights");
+    File[] directoryListing = directory.listFiles();
 
     public List<Flight> searchFlights(String from, String to, String departureDate, String classType, int noOfPassengers) throws FileNotFoundException {
-        assert directoryListing != null;
+        if (directoryListing == null) throw new FileNotFoundException("No files found");
         Arrays.sort(directoryListing);
-        ArrayList<Flight> flightData = new ArrayList<>();
-        data.filterFlightsData(from, to, departureDate, noOfPassengers, directoryListing, flightData);
-        flightData = (ArrayList<Flight>) filterSearch(classType, flightData, noOfPassengers);
+        ArrayList<Flight> flightData;
+        flightData = (ArrayList<Flight>) data.filterData(from, to, departureDate, noOfPassengers, directoryListing);
+        flightData = (ArrayList<Flight>) filterSearch(ClassType.valueOf(classType), flightData, noOfPassengers);
         return flightData;
     }
 
-    public List<Flight> filterSearch(String classType, List<Flight> flights, int noOfPassengers) {
-        if (classType.equals("Economic"))
+    public List<Flight> filterSearch(ClassType classType, List<Flight> flights, int noOfPassengers) {
+        if (classType == ClassType.Economic)
             flights = flights.stream().filter(flight -> flight.getEconomicClassSeats() >= noOfPassengers).collect(Collectors.toList());
-        if (classType.equals("First"))
+        else if (classType == ClassType.First)
             flights = flights.stream().filter(flight -> flight.getFirstClassSeats() >= noOfPassengers).collect(Collectors.toList());
-        if (classType.equals("Second"))
+        else
             flights = flights.stream().filter(flight -> flight.getSecondClassSeats() >= noOfPassengers).collect(Collectors.toList());
         return flights;
     }
