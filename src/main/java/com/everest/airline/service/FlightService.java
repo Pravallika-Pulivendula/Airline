@@ -11,17 +11,13 @@ public class FlightService {
     File[] files = directory.listFiles();
 
     public long getNextFlightNumber() {
-        long number = 0;
+        long number;
         Arrays.sort(files);
-        if (Integer.parseInt(files[0].getName()) != 1001) number = 1001;
-        else {
-            for (int eachFile = 0; eachFile < files.length - 1; eachFile++)
-                if (Long.parseLong(files[eachFile + 1].getName()) - Long.parseLong(files[eachFile].getName()) != 1) {
-                    number = Long.parseLong(files[eachFile].getName()) + 1;
-                    break;
-                }
-            number = number > 0 ? number : Long.parseLong(files[files.length - 1].getName()) + 1;
-        }
+        number = Long.parseLong(files[files.length-1].getName())+1;
         return number;
+    }
+
+    public String toString(long number,String source,String destination,String departureDate,String departTime,String arrivalTime,int availableSeats,int firstClassSeats,int secondClassSeats,int economicClassSeats,double firstClassBasePrice,double secondClassBasePrice,double economicClassBasePrice) {
+        return number+","+source+","+destination+","+departureDate+","+departTime+","+arrivalTime+","+availableSeats+","+firstClassSeats+","+secondClassSeats+","+economicClassSeats+","+firstClassBasePrice+","+secondClassBasePrice+","+economicClassBasePrice;
     }
 }

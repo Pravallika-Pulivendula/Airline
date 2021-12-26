@@ -1,7 +1,7 @@
 package com.everest.airline.controller;
 
 
-import com.everest.airline.DataHandler;
+import com.everest.airline.FileHandler;
 import com.everest.airline.model.Flight;
 import com.everest.airline.service.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,18 +10,20 @@ import org.springframework.web.bind.annotation.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 @RestController
 public class FlightController {
     @Autowired
-    DataHandler data;
+    FileHandler data;
     @Autowired
     FlightService flightService;
 
     String filePath = "src/main/java/com/everest/airline/flights";
     File directory = new File(filePath);
-    File[] files = directory.listFiles();
 
     @GetMapping("/flights")
     public ArrayList<Flight> getAllFlights() throws IOException {
@@ -30,12 +32,26 @@ public class FlightController {
 
     @GetMapping("/flights/{number}")
     public Flight getFlight(@PathVariable("number") long number) throws IOException {
-        return data.getDataFromFile(number);
+        return data.readDataFromAllFiles().stream().filter(flight -> flight.getNumber() == number).collect(Collectors.toList()).get(0);
     }
 
     @PostMapping("/flights")
-    public long addFlight(String source, String destination, String departureDate, String departTime, String arrivalTime, int availableSeats, int firstClassSeats, int secondClassSeats, int economicClassSeats, double firstClassBasePrice, double secondClassBasePrice, double economicClassBasePrice) throws IOException {
-        return flightService.getNextFlightNumber();
+    public void addFlight(String source, String destination, String departureDate, String departTime, String arrivalTime, int availableSeats, int firstClassSeats, int secondClassSeats, int economicClassSeats, double firstClassBasePrice, double secondClassBasePrice, double economicClassBasePrice) throws IOException {
+        long number = flightService.getNextFlightNumber();
+        String path = filePath + "/" + number;
+        File newFile = new File(path);
+        newFile.createNewFile();
+        String fileContents = flightService.toString(number, source, destination, departureDate, departTime, arrivalTime, availableSeats, firstClassSeats, secondClassSeats, economicClassSeats, firstClassBasePrice, secondClassBasePrice, economicClassBasePrice);
+        data.writeDataToFile(number, fileContents);
+    }
+
+    @PutMapping("/flights/{number}")
+    public Flight updateFlight(@PathVariable("number") long number, String source, String destination, String departureDate, String departTime, String arrivalTime, int availableSeats, int firstClassSeats, int secondClassSeats, int economicClassSeats, double firstClassBasePrice, double secondClassBasePrice, double economicClassBasePrice) throws IOException {
+        Flight newFlight = new Flight(number, source, destination, LocalDate.parse(departureDate), LocalTime.parse(departTime), LocalTime.parse(arrivalTime), availableSeats, firstClassSeats, secondClassSeats, economicClassSeats, firstClassBasePrice, secondClassBasePrice, economicClassBasePrice);
+        String newFlightDetails = newFlight.toString();
+        System.out.println(newFlightDetails);
+        data.writeDataToFile(number, newFlightDetails);
+        return newFlight;
     }
 
     @DeleteMapping("/flights/{number}")
