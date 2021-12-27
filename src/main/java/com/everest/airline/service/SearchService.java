@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,16 +22,17 @@ public class SearchService {
     File[] directoryListing = directory.listFiles();
 
     public List<Flight> searchFlights(String from, String to, String departureDate, String classType, int noOfPassengers) throws IOException {
+        if (isStringValid(from) || isStringValid(to) || isStringValid(departureDate))
+            throw new IllegalArgumentException("Arguments cannot be null");
         if (directoryListing == null) throw new FileNotFoundException("No files found");
         Arrays.sort(directoryListing);
-        ArrayList<Flight> flightData;
-        flightData = (ArrayList<Flight>) data.filterData(from, to, departureDate, noOfPassengers, directoryListing);
-        flightData = (ArrayList<Flight>) filterSearch(ClassType.valueOf(classType), flightData, noOfPassengers);
+        List<Flight> flightData;
+        flightData = data.filterData(from, to, departureDate, noOfPassengers);
+        flightData = flightData.stream().filter(flight -> flight.getSeatType(ClassType.valueOf(classType)).getAvailableSeats() >= noOfPassengers).collect(Collectors.toList());
         return flightData;
     }
 
-    public List<Flight> filterSearch(ClassType classType, List<Flight> flights, int noOfPassengers) {
-        flights = flights.stream().filter(flight -> flight.getSeatType(classType).getAvailableSeats() >= noOfPassengers).collect(Collectors.toList());
-        return flights;
+    public boolean isStringValid(String string) {
+        return string == null || string.trim().isEmpty();
     }
 }
