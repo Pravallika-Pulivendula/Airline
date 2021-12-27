@@ -9,23 +9,22 @@ import java.util.ArrayList;
 public class PricingService {
 
     public double calculateChargeBasedOnSeatType(double basePrice, double totalSeats, int noOfSeats) {
-        double extraCharge = 0;
-        if (noOfSeats > totalSeats - (totalSeats * 30) / 100 && noOfSeats < totalSeats) extraCharge = 0;
-        else if (noOfSeats > totalSeats - (totalSeats * 50) / 100 && noOfSeats < totalSeats - (totalSeats * 30) / 100)
-            extraCharge = (basePrice * 20) / 100;
-        else if (noOfSeats > totalSeats - (totalSeats * 75) / 100 && noOfSeats < totalSeats - (totalSeats * 50) / 100)
-            extraCharge = (basePrice * 35) / 100;
-        else if (noOfSeats < totalSeats - (totalSeats * 75) / 100 && noOfSeats > 0)
-            extraCharge = (basePrice * 50) / 100;
-        return extraCharge;
+        if (noOfSeats > totalSeats - (totalSeats * 30) / 100 && noOfSeats < totalSeats)
+            return 0;
+        if (noOfSeats > totalSeats - (totalSeats * 50) / 100 && noOfSeats < totalSeats - (totalSeats * 30) / 100)
+            return (basePrice * 20) / 100;
+        if (noOfSeats > totalSeats - (totalSeats * 75) / 100 && noOfSeats < totalSeats - (totalSeats * 50) / 100)
+            return (basePrice * 35) / 100;
+        if (noOfSeats < totalSeats - (totalSeats * 75) / 100 && noOfSeats > 0)
+            return (basePrice * 50) / 100;
+        return 0;
     }
 
     public double calculateChargeBasedOnDays(long days) {
-        double extraCharge = 0;
-        if (days > 10 && days <= 15) extraCharge = 0;
-        else if (days < 10 && days > 3) extraCharge = (double) (days * 2) / 100;
-        else if (days < 3 && days > 0) extraCharge = (double) (days * 10) / 100;
-        return extraCharge;
+        if (days > 10 && days <= 15) return 0;
+        if (days < 10 && days > 3) return (double) (days * 2) / 100;
+        if (days < 3 && days > 0) return (double) (days * 10) / 100;
+        return 0;
     }
 
     public void setPricePerSeatForEachFlight(ArrayList<Flight> flights, String classType) {
