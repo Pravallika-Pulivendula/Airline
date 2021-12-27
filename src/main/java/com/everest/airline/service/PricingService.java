@@ -8,7 +8,8 @@ import java.util.ArrayList;
 @Component
 public class PricingService {
 
-    public double calculateChargeBasedOnSeatType(double basePrice, double extraCharge, double totalSeats, int noOfSeats) {
+    public double calculateChargeBasedOnSeatType(double basePrice, double totalSeats, int noOfSeats) {
+        double extraCharge = 0;
         if (noOfSeats > totalSeats - (totalSeats * 30) / 100 && noOfSeats < totalSeats) extraCharge = 0;
         else if (noOfSeats > totalSeats - (totalSeats * 50) / 100 && noOfSeats < totalSeats - (totalSeats * 30) / 100)
             extraCharge = (basePrice * 20) / 100;
@@ -19,7 +20,8 @@ public class PricingService {
         return extraCharge;
     }
 
-    public double calculateChargeBasedOnDays(double extraCharge, long days) {
+    public double calculateChargeBasedOnDays(long days) {
+        double extraCharge = 0;
         if (days > 10 && days <= 15) extraCharge = 0;
         else if (days < 10 && days > 3) extraCharge = (double) (days * 2) / 100;
         else if (days < 3 && days > 0) extraCharge = (double) (days * 10) / 100;

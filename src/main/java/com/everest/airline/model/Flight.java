@@ -1,6 +1,5 @@
 package com.everest.airline.model;
 
-import com.everest.airline.FileHandler;
 import com.everest.airline.enums.ClassType;
 import com.everest.airline.service.PricingService;
 
@@ -16,11 +15,14 @@ public class Flight {
     private final LocalTime departTime;
     private final LocalTime arrivalTime;
     private int totalSeats;
-    private double pricePerSeat = 100.0;
+    private double pricePerSeat;
+    private final int TOTAL_ECONOMIC_CLASS_SEATS = 50;
+    private final int TOTAL_FIRST_CLASS_SEATS = 10;
+    private final int TOTAL_SECOND_CLASS_SEATS = 30;
 
-    FileHandler data = new FileHandler();
+
     PricingService pricingService = new PricingService();
-    FlightSeatType economicClassType;
+    FlightSeatType economicClassSeat;
     FlightSeatType firstClassSeat;
     FlightSeatType secondClassSeat;
 
@@ -32,18 +34,18 @@ public class Flight {
         this.departTime = departTime;
         this.arrivalTime = arrivalTime;
         this.totalSeats = totalSeats;
-        economicClassType = new FlightSeatType(50, availableEconomicClassSeats, economicClassBasePrice);
-        firstClassSeat = new FlightSeatType(10, availableFirstClassSeats, firstClassBasePrice);
-        secondClassSeat = new FlightSeatType(30, availableSecondClassSeats, secondClassBasePrice);
+        economicClassSeat = new FlightSeatType(TOTAL_ECONOMIC_CLASS_SEATS, availableEconomicClassSeats, economicClassBasePrice);
+        firstClassSeat = new FlightSeatType(TOTAL_FIRST_CLASS_SEATS, availableFirstClassSeats, firstClassBasePrice);
+        secondClassSeat = new FlightSeatType(TOTAL_SECOND_CLASS_SEATS, availableSecondClassSeats, secondClassBasePrice);
     }
 
     @Override
     public String toString() {
-        return number + "," + source + "," + destination + "," + departureDate + "," + departTime + "," + arrivalTime + "," + totalSeats + "," + firstClassSeat.getAvailableSeats() + "," + secondClassSeat.getAvailableSeats() + "," + economicClassType.getAvailableSeats() + "," + firstClassSeat.getSeatBasePrice() + "," + secondClassSeat.getSeatBasePrice() + "," + economicClassType.getSeatBasePrice();
+        return number + "," + source + "," + destination + "," + departureDate + "," + departTime + "," + arrivalTime + "," + totalSeats + "," + firstClassSeat.getAvailableSeats() + "," + secondClassSeat.getAvailableSeats() + "," + economicClassSeat.getAvailableSeats() + "," + firstClassSeat.getSeatBasePrice() + "," + secondClassSeat.getSeatBasePrice() + "," + economicClassSeat.getSeatBasePrice();
     }
 
     public FlightSeatType getSeatType(ClassType classType) {
-        if (classType == ClassType.Economic) return economicClassType;
+        if (classType == ClassType.Economic) return economicClassSeat;
         if (classType == ClassType.First) return firstClassSeat;
         if (classType == ClassType.Second) return secondClassSeat;
         return null;
@@ -75,19 +77,17 @@ public class Flight {
     }
 
     public double getChargeBasedOnDate() {
-        double extraCharge = 0;
         LocalDate date = getDepartureDate();
         LocalDate currentDate = LocalDate.now();
         long days = ChronoUnit.DAYS.between(currentDate, date);
-        return pricingService.calculateChargeBasedOnDays(extraCharge, days);
+        return pricingService.calculateChargeBasedOnDays(days);
     }
 
     public double getChargeBasedOnSeats(String classType) {
         double basePrice = getSeatTypeBasePrice(ClassType.valueOf(classType));
-        double extraCharge = 0;
         double totalSeats = getTotalClassTypeSeats(ClassType.valueOf(classType));
         int noOfSeats = getAvailableClassTypeSeats(ClassType.valueOf(classType));
-        return pricingService.calculateChargeBasedOnSeatType(basePrice, extraCharge, totalSeats, noOfSeats);
+        return pricingService.calculateChargeBasedOnSeatType(basePrice,totalSeats, noOfSeats);
     }
 
     public Long getNumber() {
