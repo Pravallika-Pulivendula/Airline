@@ -28,11 +28,15 @@ public class FileHandler {
     @Autowired
     ValidateInput validateInput;
 
-    public void writeDataToFile(long number, String fileContents) throws IOException {
+    public void writeDataToFile(long number, String fileContents) {
         File[] files = directory.listFiles((File pathname) -> pathname.getName().equals(String.valueOf(number)));
-        if (files == null) throw new FileNotFoundException("File not found");
-        Path file = Paths.get(files[0].getPath());
-        Files.writeString(file, fileContents, StandardCharsets.UTF_8);
+        try {
+            if (files == null) throw new FileNotFoundException("File not found");
+            Path file = Paths.get(files[0].getPath());
+            Files.writeString(file, fileContents, StandardCharsets.UTF_8);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
     }
 
     public Flight getDataFromFile(long number) {
@@ -40,19 +44,23 @@ public class FileHandler {
         return flight.get(0);
     }
 
-    public ArrayList<Flight> readDataFromAllFiles() throws IOException {
-        if (files == null) throw new FileNotFoundException("File not found");
+    public ArrayList<Flight> readDataFromAllFiles(){
         ArrayList<Flight> flights = new ArrayList<>();
         String[] flightDetails;
-        Arrays.sort(files);
-        for (File eachFile : files) {
-            flightDetails = new Scanner(new File(eachFile.getPath())).useDelimiter("\\Z").next().split(",");
-            flights.add(new Flight(Long.parseLong(flightDetails[0]), flightDetails[1], flightDetails[2], LocalDate.parse(flightDetails[3]), LocalTime.parse(flightDetails[4]), LocalTime.parse(flightDetails[5]), Integer.parseInt(flightDetails[6]), Integer.parseInt(flightDetails[7]), Integer.parseInt(flightDetails[8]), Integer.parseInt(flightDetails[9]), Double.parseDouble(flightDetails[10]), Double.parseDouble(flightDetails[11]), Double.parseDouble(flightDetails[12])));
+        try {
+            if (files == null) throw new FileNotFoundException("File not found");
+            Arrays.sort(files);
+            for (File eachFile : files) {
+                flightDetails = new Scanner(new File(eachFile.getPath())).useDelimiter("\\Z").next().split(",");
+                flights.add(new Flight(Long.parseLong(flightDetails[0]), flightDetails[1], flightDetails[2], LocalDate.parse(flightDetails[3]), LocalTime.parse(flightDetails[4]), LocalTime.parse(flightDetails[5]), Integer.parseInt(flightDetails[6]), Integer.parseInt(flightDetails[7]), Integer.parseInt(flightDetails[8]), Integer.parseInt(flightDetails[9]), Double.parseDouble(flightDetails[10]), Double.parseDouble(flightDetails[11]), Double.parseDouble(flightDetails[12])));
+            }
+        } catch (IOException exception) {
+            exception.printStackTrace();
         }
         return flights;
     }
 
-    public List<Flight> filterData(String from, String to, String departureDate, int noOfPassengers) throws IOException {
+    public List<Flight> filterData(String from, String to, String departureDate, int noOfPassengers)  {
         flightData = readDataFromAllFiles().stream().filter(flight -> flight.getSource().equals(from) && flight.getDestination().equals(to) && flight.getDepartureDate().toString().equals(departureDate) && flight.getTotalSeats() > noOfPassengers).collect(Collectors.toList());
         return flightData;
     }

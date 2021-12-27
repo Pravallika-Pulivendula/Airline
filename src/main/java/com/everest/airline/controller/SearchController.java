@@ -28,7 +28,7 @@ public class SearchController {
     }
 
     @RequestMapping(value = "/search")
-    public String search(String from, String to, String departureDate, int noOfPassengers, String classType, Model model) throws IOException {
+    public String search(String from, String to, String departureDate, int noOfPassengers, String classType, Model model) {
         ArrayList<Flight> flights = (ArrayList<Flight>) searchService.searchFlights(from, to, departureDate, classType, noOfPassengers);
         seatService.setPricePerSeatForEachFlight(flights, classType);
         if (flights.size() == 0) return "redirect:/no-flights-found";

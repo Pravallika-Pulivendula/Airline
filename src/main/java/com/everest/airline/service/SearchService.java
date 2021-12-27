@@ -23,15 +23,18 @@ public class SearchService {
     File[] directoryListing = directory.listFiles();
     ValidateInput validateInput = new ValidateInput();
 
-    public List<Flight> searchFlights(String from, String to, String departureDate, String classType, int noOfPassengers) throws IOException {
+    public List<Flight> searchFlights(String from, String to, String departureDate, String classType, int noOfPassengers) {
         if (validateInput.isStringValid(from) || validateInput.isStringValid(to) || validateInput.isStringValid(departureDate) || validateInput.areStringsEqual(from, to))
             throw new IllegalArgumentException("Arguments are invalid");
-        if (directoryListing == null) throw new FileNotFoundException("No files found");
+        try {
+            if (directoryListing == null) throw new FileNotFoundException("No files found");
+        }catch (IOException ioException){
+            ioException.printStackTrace();
+        }
         Arrays.sort(directoryListing);
         List<Flight> flightData;
         flightData = data.filterData(from, to, departureDate, noOfPassengers);
         flightData = flightData.stream().filter(flight -> flight.getSeatType(ClassType.valueOf(classType)).getAvailableSeats() >= noOfPassengers).collect(Collectors.toList());
         return flightData;
     }
-
 }
