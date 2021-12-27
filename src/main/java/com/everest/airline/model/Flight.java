@@ -87,7 +87,7 @@ public class Flight {
         double basePrice = getSeatTypeBasePrice(ClassType.valueOf(classType));
         double totalSeats = getTotalClassTypeSeats(ClassType.valueOf(classType));
         int noOfSeats = getAvailableClassTypeSeats(ClassType.valueOf(classType));
-        return pricingService.calculateChargeBasedOnSeatType(basePrice,totalSeats, noOfSeats);
+        return pricingService.calculateChargeBasedOnSeatType(basePrice, totalSeats, noOfSeats);
     }
 
     public Long getNumber() {

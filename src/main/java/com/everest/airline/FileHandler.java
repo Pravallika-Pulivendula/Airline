@@ -1,6 +1,7 @@
 package com.everest.airline;
 
 import com.everest.airline.model.Flight;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -24,12 +25,14 @@ public class FileHandler {
     File directory = new File("src/main/java/com/everest/airline/flights");
     File[] files = directory.listFiles();
     List<Flight> flightData = new ArrayList<>();
+    @Autowired
+    ValidateInput validateInput;
 
-    public void writeDataToFile(long number,String fileContents) throws IOException {
+    public void writeDataToFile(long number, String fileContents) throws IOException {
         File[] files = directory.listFiles((File pathname) -> pathname.getName().equals(String.valueOf(number)));
-        if(files == null) throw new FileNotFoundException("File not found");
+        if (files == null) throw new FileNotFoundException("File not found");
         Path file = Paths.get(files[0].getPath());
-        Files.writeString(file,fileContents,StandardCharsets.UTF_8);
+        Files.writeString(file, fileContents, StandardCharsets.UTF_8);
     }
 
     public Flight getDataFromFile(long number) {
@@ -38,9 +41,9 @@ public class FileHandler {
     }
 
     public ArrayList<Flight> readDataFromAllFiles() throws IOException {
+        if (files == null) throw new FileNotFoundException("File not found");
         ArrayList<Flight> flights = new ArrayList<>();
         String[] flightDetails;
-        if (files == null) throw new FileNotFoundException("File not found");
         Arrays.sort(files);
         for (File eachFile : files) {
             flightDetails = new Scanner(new File(eachFile.getPath())).useDelimiter("\\Z").next().split(",");
@@ -49,7 +52,7 @@ public class FileHandler {
         return flights;
     }
 
-    public List<Flight> filterData(String from, String to, String departureDate, int noOfPassengers, File[] directoryListing) throws IOException {
+    public List<Flight> filterData(String from, String to, String departureDate, int noOfPassengers) throws IOException {
         flightData = readDataFromAllFiles().stream().filter(flight -> flight.getSource().equals(from) && flight.getDestination().equals(to) && flight.getDepartureDate().toString().equals(departureDate) && flight.getTotalSeats() > noOfPassengers).collect(Collectors.toList());
         return flightData;
     }

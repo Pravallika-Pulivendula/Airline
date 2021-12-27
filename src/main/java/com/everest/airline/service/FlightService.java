@@ -3,6 +3,7 @@ package com.everest.airline.service;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Arrays;
 
 @Component
@@ -10,7 +11,8 @@ public class FlightService {
     File directory = new File("src/main/java/com/everest/airline/flights");
     File[] files = directory.listFiles();
 
-    public long getNextFlightNumber() {
+    public long getNextFlightNumber() throws FileNotFoundException {
+        if(files == null) throw new FileNotFoundException("Files not found");
         long number;
         Arrays.sort(files);
         number = Long.parseLong(files[files.length-1].getName())+1;

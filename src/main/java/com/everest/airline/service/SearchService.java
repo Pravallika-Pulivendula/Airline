@@ -1,6 +1,7 @@
 package com.everest.airline.service;
 
 import com.everest.airline.FileHandler;
+import com.everest.airline.ValidateInput;
 import com.everest.airline.enums.ClassType;
 import com.everest.airline.model.Flight;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +21,11 @@ public class SearchService {
 
     File directory = new File("src/main/java/com/everest/airline/flights");
     File[] directoryListing = directory.listFiles();
+    ValidateInput validateInput = new ValidateInput();
 
     public List<Flight> searchFlights(String from, String to, String departureDate, String classType, int noOfPassengers) throws IOException {
-        if (isStringValid(from) || isStringValid(to) || isStringValid(departureDate))
-            throw new IllegalArgumentException("Arguments cannot be null");
+        if (validateInput.isStringValid(from) || validateInput.isStringValid(to) || validateInput.isStringValid(departureDate) || validateInput.areStringsEqual(from, to))
+            throw new IllegalArgumentException("Arguments are invalid");
         if (directoryListing == null) throw new FileNotFoundException("No files found");
         Arrays.sort(directoryListing);
         List<Flight> flightData;
@@ -32,7 +34,4 @@ public class SearchService {
         return flightData;
     }
 
-    public boolean isStringValid(String string) {
-        return string == null || string.trim().isEmpty();
-    }
 }

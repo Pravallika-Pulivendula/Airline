@@ -2,6 +2,7 @@ package com.everest.airline.controller;
 
 
 import com.everest.airline.FileHandler;
+import com.everest.airline.ValidateInput;
 import com.everest.airline.model.Flight;
 import com.everest.airline.service.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
@@ -21,6 +20,8 @@ public class FlightController {
     FileHandler data;
     @Autowired
     FlightService flightService;
+    @Autowired
+    ValidateInput validateInput;
 
     String filePath = "src/main/java/com/everest/airline/flights";
     File directory = new File(filePath);
@@ -37,6 +38,8 @@ public class FlightController {
 
     @PostMapping("/flights")
     public void addFlight(String source, String destination, String departureDate, String departTime, String arrivalTime, int availableSeats, int firstClassSeats, int secondClassSeats, int economicClassSeats, double firstClassBasePrice, double secondClassBasePrice, double economicClassBasePrice) throws IOException {
+        if (validateInput.isStringValid(source) || validateInput.isStringValid(destination) || validateInput.areStringsEqual(source, destination))
+            throw new IllegalArgumentException("Arguments are not valid");
         long number = flightService.getNextFlightNumber();
         String path = filePath + "/" + number;
         File newFile = new File(path);
@@ -47,9 +50,10 @@ public class FlightController {
 
     @PutMapping("/flights/{number}")
     public Flight updateFlight(@PathVariable("number") long number, String source, String destination, String departureDate, String departTime, String arrivalTime, int availableSeats, int firstClassSeats, int secondClassSeats, int economicClassSeats, double firstClassBasePrice, double secondClassBasePrice, double economicClassBasePrice) throws IOException {
-        Flight newFlight = new Flight(number, source, destination, LocalDate.parse(departureDate), LocalTime.parse(departTime), LocalTime.parse(arrivalTime), availableSeats, firstClassSeats, secondClassSeats, economicClassSeats, firstClassBasePrice, secondClassBasePrice, economicClassBasePrice);
+        if (validateInput.isStringValid(source) || validateInput.isStringValid(destination) || validateInput.areStringsEqual(source, destination))
+            throw new IllegalArgumentException("Arguments are not valid");
+        Flight newFlight = new Flight(number, source, destination, validateInput.parseInputDate(departureDate), validateInput.parseInputTime(departTime), validateInput.parseInputTime(arrivalTime), availableSeats, firstClassSeats, secondClassSeats, economicClassSeats, firstClassBasePrice, secondClassBasePrice, economicClassBasePrice);
         String newFlightDetails = newFlight.toString();
-        System.out.println(newFlightDetails);
         data.writeDataToFile(number, newFlightDetails);
         return newFlight;
     }

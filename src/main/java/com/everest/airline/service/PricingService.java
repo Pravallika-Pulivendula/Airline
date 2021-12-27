@@ -29,8 +29,6 @@ public class PricingService {
     }
 
     public void setPricePerSeatForEachFlight(ArrayList<Flight> flights, String classType) {
-        for (Flight flight : flights) {
-            flight.updatePricePerSeat(classType);
-        }
+        flights.forEach(flight -> flight.updatePricePerSeat(classType));
     }
 }
