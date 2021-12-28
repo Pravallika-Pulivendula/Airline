@@ -30,8 +30,8 @@ public class SearchController {
     @RequestMapping(value = "/search")
     public String search(String from, String to, String departureDate, int noOfPassengers, String classType, Model model) {
         ArrayList<Flight> flights = (ArrayList<Flight>) searchService.searchFlights(from, to, departureDate, classType, noOfPassengers);
-        seatService.setPricePerSeatForEachFlight(flights, classType);
         if (flights.size() == 0) return "redirect:/no-flights-found";
+        flights.forEach(flight -> flight.updatePricePerSeat(classType));
         model.addAttribute("flights", flights);
         model.addAttribute("noOfPassengers", noOfPassengers);
         model.addAttribute("classType", classType);
