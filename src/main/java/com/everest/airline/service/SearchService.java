@@ -23,7 +23,7 @@ public class SearchService {
     File[] directoryListing = directory.listFiles();
     ValidateInput validateInput = new ValidateInput();
 
-    public List<Flight> searchFlights(String from, String to, String departureDate, String classType, int noOfPassengers) {
+    public List<Flight> searchFlights(String from, String to, String departureDate, String classType, int noOfPassengers) throws IOException {
         if (validateInput.isStringValid(from) || validateInput.isStringValid(to) || validateInput.isStringValid(departureDate) || validateInput.areStringsEqual(from, to))
             throw new IllegalArgumentException("Arguments are invalid");
         try {

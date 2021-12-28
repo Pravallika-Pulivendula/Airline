@@ -8,25 +8,21 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
 public class Flight {
-    private final Long number;
-    private final String source;
-    private final String destination;
-    private final LocalDate departureDate;
-    private final LocalTime departTime;
-    private final LocalTime arrivalTime;
+    private Long number;
+    private String source;
+    private String destination;
+    private LocalDate departureDate;
+    private LocalTime departTime;
+    private LocalTime arrivalTime;
     private int totalSeats;
     private double pricePerSeat;
-    private final int TOTAL_ECONOMIC_CLASS_SEATS = 50;
-    private final int TOTAL_FIRST_CLASS_SEATS = 10;
-    private final int TOTAL_SECOND_CLASS_SEATS = 30;
-
+    FlightSeatType economicClassSeatType;
+    FlightSeatType firstClassSeatType;
+    FlightSeatType secondClassSeatType;
 
     PricingService pricingService = new PricingService();
-    FlightSeatType economicClassSeat;
-    FlightSeatType firstClassSeat;
-    FlightSeatType secondClassSeat;
 
-    public Flight(Long number, String source, String destination, LocalDate departureDate, LocalTime departTime, LocalTime arrivalTime, int totalSeats, int availableFirstClassSeats, int availableSecondClassSeats, int availableEconomicClassSeats, double firstClassBasePrice, double secondClassBasePrice, double economicClassBasePrice) {
+    public Flight(Long number, String source, String destination, LocalDate departureDate, LocalTime departTime, LocalTime arrivalTime, int totalSeats, FlightSeatType economicClassSeatType, FlightSeatType firstClassSeatType, FlightSeatType secondClassSeatType) {
         this.number = number;
         this.source = source;
         this.destination = destination;
@@ -34,33 +30,24 @@ public class Flight {
         this.departTime = departTime;
         this.arrivalTime = arrivalTime;
         this.totalSeats = totalSeats;
-        economicClassSeat = new FlightSeatType(TOTAL_ECONOMIC_CLASS_SEATS, availableEconomicClassSeats, economicClassBasePrice);
-        firstClassSeat = new FlightSeatType(TOTAL_FIRST_CLASS_SEATS, availableFirstClassSeats, firstClassBasePrice);
-        secondClassSeat = new FlightSeatType(TOTAL_SECOND_CLASS_SEATS, availableSecondClassSeats, secondClassBasePrice);
+        this.economicClassSeatType = economicClassSeatType;
+        this.firstClassSeatType = firstClassSeatType;
+        this.secondClassSeatType = secondClassSeatType;
+    }
+
+    public Flight() {
     }
 
     @Override
     public String toString() {
-        return number + "," + source + "," + destination + "," + departureDate + "," + departTime + "," + arrivalTime + "," + totalSeats + "," + firstClassSeat.getAvailableSeats() + "," + secondClassSeat.getAvailableSeats() + "," + economicClassSeat.getAvailableSeats() + "," + firstClassSeat.getSeatBasePrice() + "," + secondClassSeat.getSeatBasePrice() + "," + economicClassSeat.getSeatBasePrice();
+        return number + "," + source + "," + destination + "," + departureDate + "," + departTime + "," + arrivalTime + "," + totalSeats + "," + economicClassSeatType.getAvailableSeats() + "," + economicClassSeatType.getSeatBasePrice() + "," + firstClassSeatType.getAvailableSeats() + "," + firstClassSeatType.getSeatBasePrice() + "," + secondClassSeatType.getAvailableSeats() + "," + secondClassSeatType.getSeatBasePrice();
     }
 
     public FlightSeatType getSeatType(ClassType classType) {
-        if (classType == ClassType.Economic) return economicClassSeat;
-        if (classType == ClassType.First) return firstClassSeat;
-        if (classType == ClassType.Second) return secondClassSeat;
+        if (classType == ClassType.Economic) return economicClassSeatType;
+        if (classType == ClassType.First) return firstClassSeatType;
+        if (classType == ClassType.Second) return secondClassSeatType;
         return null;
-    }
-
-    public double getSeatTypeBasePrice(ClassType classType) {
-        return getSeatType(classType).getSeatBasePrice();
-    }
-
-    public int getAvailableClassTypeSeats(ClassType classType) {
-        return getSeatType(classType).getAvailableSeats();
-    }
-
-    public int getTotalClassTypeSeats(ClassType classType) {
-        return getSeatType(classType).getTotalSeats();
     }
 
     public void updateSeats(int noOfPassengers, ClassType classType) {
@@ -72,8 +59,8 @@ public class Flight {
         double basePrice = getSeatTypeBasePrice(ClassType.valueOf(classType));
         double extraChargeBasedOnSeats = getChargeBasedOnSeats(classType);
         double extraChargeBasedOnDate = getChargeBasedOnDate();
-        double pricePerSeat = basePrice + extraChargeBasedOnSeats + extraChargeBasedOnDate;
-        setPricePerSeat(pricePerSeat);
+        double seatPrice = basePrice + extraChargeBasedOnSeats + extraChargeBasedOnDate;
+        setPricePerSeat(seatPrice);
     }
 
     public double getChargeBasedOnDate() {
@@ -85,9 +72,33 @@ public class Flight {
 
     public double getChargeBasedOnSeats(String classType) {
         double basePrice = getSeatTypeBasePrice(ClassType.valueOf(classType));
-        double totalSeats = getTotalClassTypeSeats(ClassType.valueOf(classType));
+        double totalAvailableSeats = getTotalClassTypeSeats(ClassType.valueOf(classType));
         int noOfSeats = getAvailableClassTypeSeats(ClassType.valueOf(classType));
-        return pricingService.calculateChargeBasedOnSeatType(basePrice, totalSeats, noOfSeats);
+        return pricingService.calculateChargeBasedOnSeatType(basePrice, totalAvailableSeats, noOfSeats);
+    }
+
+    public void setNumber(long number) {
+        this.number = number;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public void setDestination(String destination) {
+        this.destination = destination;
+    }
+
+    public void setDepartureDate(LocalDate departureDate) {
+        this.departureDate = departureDate;
+    }
+
+    public void setDepartTime(LocalTime departTime) {
+        this.departTime = departTime;
+    }
+
+    public void setArrivalTime(LocalTime arrivalTime) {
+        this.arrivalTime = arrivalTime;
     }
 
     public Long getNumber() {
@@ -125,4 +136,29 @@ public class Flight {
     public double getPricePerSeat() {
         return pricePerSeat;
     }
+
+    public double getSeatTypeBasePrice(ClassType classType) {
+        return getSeatType(classType).getSeatBasePrice();
+    }
+
+    public int getAvailableClassTypeSeats(ClassType classType) {
+        return getSeatType(classType).getAvailableSeats();
+    }
+
+    public int getTotalClassTypeSeats(ClassType classType) {
+        return getSeatType(classType).getTotalSeats();
+    }
+
+    public void setEconomicClassSeatType(FlightSeatType economicClassSeatType) {
+        this.economicClassSeatType = economicClassSeatType;
+    }
+
+    public void setFirstClassSeatType(FlightSeatType firstClassSeatType) {
+        this.firstClassSeatType = firstClassSeatType;
+    }
+
+    public void setSecondClassSeatType(FlightSeatType secondClassSeatType) {
+        this.secondClassSeatType = secondClassSeatType;
+    }
+
 }
