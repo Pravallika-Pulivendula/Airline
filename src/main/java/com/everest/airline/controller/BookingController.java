@@ -9,13 +9,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.io.IOException;
+
 @Controller
 public class BookingController {
     @Autowired
     FileHandler data;
 
     @RequestMapping(value = "/{number}/{noOfPassengers}/{classType}/{pricePerSeat}")
-    public String book(@PathVariable("number") long number, @PathVariable("noOfPassengers") int noOfPassengers, @PathVariable("classType") String classType, @PathVariable("pricePerSeat") double pricePerSeat) {
+    public String book(@PathVariable("number") long number, @PathVariable("noOfPassengers") int noOfPassengers, @PathVariable("classType") String classType, @PathVariable("pricePerSeat") double pricePerSeat) throws IOException {
         Flight flight = data.getDataFromFile(number);
         flight.updateSeats(noOfPassengers, ClassType.valueOf(classType));
         data.writeDataToFile(number, flight.toString());

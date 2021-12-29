@@ -22,8 +22,7 @@ public class Flight {
 
     PricingService pricingService = new PricingService();
 
-    public Flight(Long number, String source, String destination, LocalDate departureDate, LocalTime departTime, LocalTime arrivalTime, int totalSeats, FlightSeatType economicClassSeatType, FlightSeatType firstClassSeatType, FlightSeatType secondClassSeatType) {
-        this.number = number;
+    public Flight(String source, String destination, LocalDate departureDate, LocalTime departTime, LocalTime arrivalTime, int totalSeats, FlightSeatType economicClassSeatType, FlightSeatType firstClassSeatType, FlightSeatType secondClassSeatType) {
         this.source = source;
         this.destination = destination;
         this.departureDate = departureDate;

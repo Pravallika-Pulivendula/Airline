@@ -32,29 +32,21 @@ public class FlightController {
     }
 
     @PostMapping("/flights")
-    public long addFlight(@RequestBody Flight flight) {
+    public long addFlight(@RequestBody Flight flight) throws IOException {
         long number = flightService.getNextFlightNumber();
-        String fileSeparator = "/";
-        String path = FILEPATH + fileSeparator + number;
-        File newFile = new File(path);
-        try {
-            if (!newFile.createNewFile()) throw new IOException("File not created");
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
-        }
         flight.setNumber(number);
         data.writeDataToFile(number, flight.toString());
         return number;
     }
 
     @PutMapping("/flights/{number}")
-    public Flight updateFlight(@PathVariable("number") long number, @RequestBody Flight newFlight) {
+    public Flight updateFlight(@PathVariable("number") long number, @RequestBody Flight newFlight) throws IOException {
         data.writeDataToFile(number, newFlight.toString());
         return newFlight;
     }
 
     @DeleteMapping("/flights/{number}")
-    public void deleteFlight(@PathVariable("number") long number) {
+    public void deleteFlight(@PathVariable("number") long number)  {
         File directory = new File(FILEPATH);
         File[] files = directory.listFiles((File pathname) -> pathname.getName().equals(String.valueOf(number)));
         try {
