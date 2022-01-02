@@ -1,6 +1,6 @@
 package com.everest.airline.controller;
 
-import com.everest.airline.FileHandler;
+import com.everest.airline.utils.FileHandler;
 import com.everest.airline.enums.ClassType;
 import com.everest.airline.model.Flight;
 import org.springframework.beans.factory.annotation.Autowired;

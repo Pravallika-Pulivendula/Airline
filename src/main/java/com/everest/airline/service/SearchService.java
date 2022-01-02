@@ -1,7 +1,7 @@
 package com.everest.airline.service;
 
-import com.everest.airline.FileHandler;
-import com.everest.airline.ValidateInput;
+import com.everest.airline.utils.FileHandler;
+import com.everest.airline.utils.ValidateInput;
 import com.everest.airline.enums.ClassType;
 import com.everest.airline.model.Flight;
 import org.springframework.beans.factory.annotation.Autowired;

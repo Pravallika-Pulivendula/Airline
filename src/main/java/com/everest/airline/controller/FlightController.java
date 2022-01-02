@@ -1,9 +1,10 @@
 package com.everest.airline.controller;
 
 
-import com.everest.airline.FileHandler;
+import com.everest.airline.utils.FileHandler;
 import com.everest.airline.model.Flight;
 import com.everest.airline.service.FlightService;
+import com.everest.airline.utils.ValidateInput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,8 @@ public class FlightController {
     FileHandler data;
     @Autowired
     FlightService flightService;
+    @Autowired
+    ValidateInput validateInput;
 
     private static final String FILEPATH = "src/main/java/com/everest/airline/flights";
 
@@ -33,14 +36,24 @@ public class FlightController {
 
     @PostMapping("/flights")
     public long addFlight(@RequestBody Flight flight) throws IOException {
+        if(validateInput.isStringValid(flight.getSource()) || validateInput.isStringValid(flight.getDestination()) || validateInput.areStringsEqual(flight.getSource(), flight.getDestination()))
+            throw new IllegalArgumentException("Arguments are invalid");
         long number = flightService.getNextFlightNumber();
         flight.setNumber(number);
+        String fileSeparator = "/";
+        String path = FILEPATH + fileSeparator + number;
+        File newFile = new File(path);
+        try {if (!newFile.createNewFile()) throw new IOException("File not created");
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
         data.writeDataToFile(number, flight.toString());
         return number;
     }
 
     @PutMapping("/flights/{number}")
     public Flight updateFlight(@PathVariable("number") long number, @RequestBody Flight newFlight) throws IOException {
+        newFlight.setNumber(number);
         data.writeDataToFile(number, newFlight.toString());
         return newFlight;
     }

@@ -2,6 +2,9 @@ package com.everest.airline.model;
 
 import com.everest.airline.enums.ClassType;
 import com.everest.airline.service.PricingService;
+import com.everest.airline.utils.ValidateInput;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -21,6 +24,7 @@ public class Flight {
     FlightSeatType secondClassSeatType;
 
     PricingService pricingService = new PricingService();
+    ValidateInput validateInput = new ValidateInput();
 
     public Flight(String source, String destination, LocalDate departureDate, LocalTime departTime, LocalTime arrivalTime, int totalSeats, FlightSeatType economicClassSeatType, FlightSeatType firstClassSeatType, FlightSeatType secondClassSeatType) {
         this.source = source;
@@ -88,16 +92,16 @@ public class Flight {
         this.destination = destination;
     }
 
-    public void setDepartureDate(LocalDate departureDate) {
-        this.departureDate = departureDate;
+    public void setDepartureDate(String departureDate) {
+        this.departureDate = validateInput.parseInputDate(departureDate);
     }
 
-    public void setDepartTime(LocalTime departTime) {
-        this.departTime = departTime;
+    public void setDepartTime(String departTime) {
+        this.departTime = validateInput.parseInputTime(departTime);
     }
 
-    public void setArrivalTime(LocalTime arrivalTime) {
-        this.arrivalTime = arrivalTime;
+    public void setArrivalTime(String arrivalTime) {
+        this.arrivalTime = validateInput.parseInputTime(arrivalTime);
     }
 
     public Long getNumber() {

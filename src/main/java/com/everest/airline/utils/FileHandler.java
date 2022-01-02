@@ -1,22 +1,17 @@
-package com.everest.airline;
+package com.everest.airline.utils;
 
 import com.everest.airline.model.Flight;
 import com.everest.airline.model.FlightSeatType;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -58,19 +53,19 @@ public class FileHandler {
     }
 
     public List<Flight> readDataFromAllFiles() throws IOException {
-        ArrayList<Flight> flights = new ArrayList<>();
+        List<Flight> flights = new ArrayList<>();
         try (Stream<Path> paths = Files.walk(Paths.get(FILEPATH))) {
-            paths.filter(Files::isRegularFile)
-                    .forEach(filePath ->
-                    {
-                        String[] flightDetails;
-                        try (Scanner scanner = new Scanner(String.valueOf(filePath))) {
-                            flightDetails = scanner.useDelimiter("\\Z").next().split(",");
-                        }
-                        Flight flight = new Flight(flightDetails[1], flightDetails[2], LocalDate.parse(flightDetails[3]), LocalTime.parse(flightDetails[4]), LocalTime.parse(flightDetails[5]), Integer.parseInt(flightDetails[6]), new FlightSeatType(50, Integer.parseInt(flightDetails[7]), Double.parseDouble(flightDetails[8])), new FlightSeatType(10, Integer.parseInt(flightDetails[9]), Double.parseDouble(flightDetails[10])), new FlightSeatType(30, Integer.parseInt(flightDetails[11]), Double.parseDouble(flightDetails[12])));
-                        flight.setNumber(Long.parseLong(flightDetails[0]));
-                        flights.add(flight);
-                    });
+            paths.filter(Files::isRegularFile).forEach(filePath ->
+            {
+                try (Scanner scanner = new Scanner(new FileReader(String.valueOf(filePath)))) {
+                    String[] flightDetails = scanner.useDelimiter("\\Z").next().split(",");
+                    Flight flight = new Flight(flightDetails[1], flightDetails[2], LocalDate.parse(flightDetails[3]), LocalTime.parse(flightDetails[4]), LocalTime.parse(flightDetails[5]), Integer.parseInt(flightDetails[6]), new FlightSeatType(50, Integer.parseInt(flightDetails[7]), Double.parseDouble(flightDetails[8])), new FlightSeatType(10, Integer.parseInt(flightDetails[9]), Double.parseDouble(flightDetails[10])), new FlightSeatType(30, Integer.parseInt(flightDetails[11]), Double.parseDouble(flightDetails[12])));
+                    flight.setNumber(Long.parseLong(flightDetails[0]));
+                    flights.add(flight);
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+            });
         }
         return flights;
     }

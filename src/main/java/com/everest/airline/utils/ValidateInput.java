@@ -1,4 +1,4 @@
-package com.everest.airline;
+package com.everest.airline.utils;
 
 import org.springframework.stereotype.Component;
 
@@ -22,7 +22,7 @@ public class ValidateInput {
         try {
             date = LocalDate.parse(string);
         } catch (DateTimeParseException exception) {
-            throw new IllegalArgumentException(String.format("Could not parse input date %s, please input a date in dd-mm-yyyy format", string));
+            throw new IllegalArgumentException(String.format("Could not parse input date %s, please input a date in yyyy-MM-dd format", string));
         }
         return date;
     }
