@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class PricingService {
 
-    public double calculateChargeBasedOnSeatType(double basePrice, double totalSeats, int noOfSeats) {
+    public double calculateChargeBasedOnSeatType(double basePrice, int totalSeats, int noOfSeats) {
         final double THIRTY_PERCENT = 0.3;
         final double FIFTY_PERCENT = 0.5;
         final double SEVENTY_FIVE_PERCENT = 0.75;

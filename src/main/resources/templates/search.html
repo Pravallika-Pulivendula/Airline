@@ -25,7 +25,7 @@
             <td th:text="${flight.destination}"></td>
             <td th:text="${flight.departTime}"></td>
             <td th:text="${flight.arrivalTime}"></td>
-            <td th:text="${flight.getAvailableSeats()}"></td>
+            <td th:text="${flight.getTotalAvailableSeats()}"></td>
             <td th:text="${flight.getAvailableClassTypeSeats(classType)}"></td>
             <td th:text="${flight.pricePerSeat}"></td>
             <td><form th:action="@{/{number}/{noOfPassengers}/{classType}/{pricePerSeat} (number = ${flight.number},noOfPassengers=${noOfPassengers},classType=${classType},pricePerSeat=${flight.pricePerSeat})}" method="post">
