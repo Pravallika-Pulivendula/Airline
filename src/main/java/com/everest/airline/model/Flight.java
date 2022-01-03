@@ -19,9 +19,8 @@ public class Flight {
     FlightSeatType economicClass;
     FlightSeatType firstClass;
     FlightSeatType secondClass;
-
-    PricingService pricingService = new PricingService();
-    ValidateInput validateInput = new ValidateInput();
+    PricingService pricingService;
+    ValidateInput validateInput;
 
     public Flight(String source, String destination, LocalDate departureDate, LocalTime departTime, LocalTime arrivalTime, FlightSeatType economicClass, FlightSeatType firstClass, FlightSeatType secondClass) {
         this.source = source;
@@ -32,6 +31,8 @@ public class Flight {
         this.economicClass = economicClass;
         this.firstClass = firstClass;
         this.secondClass = secondClass;
+        pricingService = new PricingService();
+        validateInput = new ValidateInput();
     }
 
     public Flight() {
@@ -39,7 +40,7 @@ public class Flight {
 
     @Override
     public String toString() {
-        return number + "," + source + "," + destination + "," + departureDate + "," + departTime + "," + arrivalTime + "," + "," + economicClass.getAvailableSeats() + "," + economicClass.getSeatBasePrice() + "," + firstClass.getAvailableSeats() + "," + firstClass.getSeatBasePrice() + "," + secondClass.getAvailableSeats() + "," + secondClass.getSeatBasePrice();
+        return number + "," + source + "," + destination + "," + departureDate + "," + departTime + "," + arrivalTime + "," + economicClass.getAvailableSeats() + "," + economicClass.getSeatBasePrice() + "," + firstClass.getAvailableSeats() + "," + firstClass.getSeatBasePrice() + "," + secondClass.getAvailableSeats() + "," + secondClass.getSeatBasePrice();
     }
 
     public FlightSeatType getSeatType(ClassType classType) {
@@ -55,24 +56,11 @@ public class Flight {
 
     public void updatePricePerSeat(String classType) {
         double basePrice = getSeatTypeBasePrice(ClassType.valueOf(classType));
-        double extraChargeBasedOnSeats = getChargeBasedOnSeats(classType);
-        double extraChargeBasedOnDate = getChargeBasedOnDate();
-        double seatPrice = basePrice + extraChargeBasedOnSeats + extraChargeBasedOnDate;
+        int totalAvailableSeats = getAvailableClassTypeSeats(ClassType.valueOf(classType));
+        int totalSeats = getTotalClassTypeSeats(ClassType.valueOf(classType));
+        long days = ChronoUnit.DAYS.between(getDepartureDate(), LocalDate.now());
+        double seatPrice = basePrice + pricingService.calculateChargeBasedOnSeatType(basePrice, totalSeats, totalAvailableSeats) + pricingService.calculateChargeBasedOnDays(days);
         setPricePerSeat(seatPrice);
-    }
-
-    public double getChargeBasedOnDate() {
-        LocalDate date = getDepartureDate();
-        LocalDate currentDate = LocalDate.now();
-        long days = ChronoUnit.DAYS.between(currentDate, date);
-        return pricingService.calculateChargeBasedOnDays(days);
-    }
-
-    public double getChargeBasedOnSeats(String classType) {
-        double basePrice = getSeatTypeBasePrice(ClassType.valueOf(classType));
-        double totalAvailableSeats = getTotalClassTypeSeats(ClassType.valueOf(classType));
-        int noOfSeats = getAvailableClassTypeSeats(ClassType.valueOf(classType));
-        return pricingService.calculateChargeBasedOnSeatType(basePrice, totalAvailableSeats, noOfSeats);
     }
 
     public void setNumber(long number) {
@@ -119,8 +107,8 @@ public class Flight {
         return departTime;
     }
 
-    public int getAvailableSeats(){
-        return economicClass.getAvailableSeats()+ firstClass.getAvailableSeats()+secondClass.getAvailableSeats();
+    public int getTotalAvailableSeats() {
+        return economicClass.getAvailableSeats() + firstClass.getAvailableSeats() + secondClass.getAvailableSeats();
     }
 
     public LocalTime getArrivalTime() {
@@ -158,5 +146,4 @@ public class Flight {
     public void setSecondClass(FlightSeatType secondClass) {
         this.secondClass = secondClass;
     }
-
 }
