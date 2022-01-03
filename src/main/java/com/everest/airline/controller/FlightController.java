@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 @RestController
@@ -22,7 +24,7 @@ public class FlightController {
     @Autowired
     ValidateInput validateInput;
 
-    private static final String FILEPATH = "src/main/java/com/everest/airline/flights";
+    private static final String FILE_PATH = "src/main/java/com/everest/airline/flights";
 
     @GetMapping("/flights")
     public List<Flight> getAllFlights() throws IOException {
@@ -41,7 +43,7 @@ public class FlightController {
         long number = flightService.getNextFlightNumber();
         flight.setNumber(number);
         String fileSeparator = "/";
-        String path = FILEPATH + fileSeparator + number;
+        String path = FILE_PATH + fileSeparator + number;
         File newFile = new File(path);
         try {if (!newFile.createNewFile()) throw new IOException("File not created");
         } catch (IOException ioException) {
@@ -59,15 +61,10 @@ public class FlightController {
     }
 
     @DeleteMapping("/flights/{number}")
-    public void deleteFlight(@PathVariable("number") long number)  {
-        File directory = new File(FILEPATH);
+    public void deleteFlight(@PathVariable("number") long number) throws IOException {
+        File directory = new File(FILE_PATH);
         File[] files = directory.listFiles((File pathname) -> pathname.getName().equals(String.valueOf(number)));
-        try {
-            if (files == null) throw new FileNotFoundException("File not found");
-            File file = new File(files[0].getPath());
-            if (!file.delete()) throw new IOException("File is not deleted");
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
-        }
+        if(files == null) throw new FileNotFoundException("No such files");
+        Files.delete(Path.of(files[0].getPath()));
     }
 }
