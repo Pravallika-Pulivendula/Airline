@@ -3,8 +3,6 @@ package com.everest.airline.model;
 import com.everest.airline.enums.ClassType;
 import com.everest.airline.service.PricingService;
 import com.everest.airline.utils.ValidateInput;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -17,25 +15,23 @@ public class Flight {
     private LocalDate departureDate;
     private LocalTime departTime;
     private LocalTime arrivalTime;
-    private int totalSeats;
     private double pricePerSeat;
-    FlightSeatType economicClassSeatType;
-    FlightSeatType firstClassSeatType;
-    FlightSeatType secondClassSeatType;
+    FlightSeatType economicClass;
+    FlightSeatType firstClass;
+    FlightSeatType secondClass;
 
     PricingService pricingService = new PricingService();
     ValidateInput validateInput = new ValidateInput();
 
-    public Flight(String source, String destination, LocalDate departureDate, LocalTime departTime, LocalTime arrivalTime, int totalSeats, FlightSeatType economicClassSeatType, FlightSeatType firstClassSeatType, FlightSeatType secondClassSeatType) {
+    public Flight(String source, String destination, LocalDate departureDate, LocalTime departTime, LocalTime arrivalTime, FlightSeatType economicClass, FlightSeatType firstClass, FlightSeatType secondClass) {
         this.source = source;
         this.destination = destination;
         this.departureDate = departureDate;
         this.departTime = departTime;
         this.arrivalTime = arrivalTime;
-        this.totalSeats = totalSeats;
-        this.economicClassSeatType = economicClassSeatType;
-        this.firstClassSeatType = firstClassSeatType;
-        this.secondClassSeatType = secondClassSeatType;
+        this.economicClass = economicClass;
+        this.firstClass = firstClass;
+        this.secondClass = secondClass;
     }
 
     public Flight() {
@@ -43,18 +39,17 @@ public class Flight {
 
     @Override
     public String toString() {
-        return number + "," + source + "," + destination + "," + departureDate + "," + departTime + "," + arrivalTime + "," + totalSeats + "," + economicClassSeatType.getAvailableSeats() + "," + economicClassSeatType.getSeatBasePrice() + "," + firstClassSeatType.getAvailableSeats() + "," + firstClassSeatType.getSeatBasePrice() + "," + secondClassSeatType.getAvailableSeats() + "," + secondClassSeatType.getSeatBasePrice();
+        return number + "," + source + "," + destination + "," + departureDate + "," + departTime + "," + arrivalTime + "," + "," + economicClass.getAvailableSeats() + "," + economicClass.getSeatBasePrice() + "," + firstClass.getAvailableSeats() + "," + firstClass.getSeatBasePrice() + "," + secondClass.getAvailableSeats() + "," + secondClass.getSeatBasePrice();
     }
 
     public FlightSeatType getSeatType(ClassType classType) {
-        if (classType == ClassType.Economic) return economicClassSeatType;
-        if (classType == ClassType.First) return firstClassSeatType;
-        if (classType == ClassType.Second) return secondClassSeatType;
+        if (classType == ClassType.Economic) return economicClass;
+        if (classType == ClassType.First) return firstClass;
+        if (classType == ClassType.Second) return secondClass;
         return null;
     }
 
     public void updateSeats(int noOfPassengers, ClassType classType) {
-        this.totalSeats = this.totalSeats - noOfPassengers;
         getSeatType(classType).updateSeats(noOfPassengers);
     }
 
@@ -120,12 +115,12 @@ public class Flight {
         return destination;
     }
 
-    public int getTotalSeats() {
-        return totalSeats;
-    }
-
     public LocalTime getDepartTime() {
         return departTime;
+    }
+
+    public int getAvailableSeats(){
+        return economicClass.getAvailableSeats()+ firstClass.getAvailableSeats()+secondClass.getAvailableSeats();
     }
 
     public LocalTime getArrivalTime() {
@@ -152,16 +147,16 @@ public class Flight {
         return getSeatType(classType).getTotalSeats();
     }
 
-    public void setEconomicClassSeatType(FlightSeatType economicClassSeatType) {
-        this.economicClassSeatType = economicClassSeatType;
+    public void setEconomicClass(FlightSeatType economicClass) {
+        this.economicClass = economicClass;
     }
 
-    public void setFirstClassSeatType(FlightSeatType firstClassSeatType) {
-        this.firstClassSeatType = firstClassSeatType;
+    public void setFirstClass(FlightSeatType firstClass) {
+        this.firstClass = firstClass;
     }
 
-    public void setSecondClassSeatType(FlightSeatType secondClassSeatType) {
-        this.secondClassSeatType = secondClassSeatType;
+    public void setSecondClass(FlightSeatType secondClass) {
+        this.secondClass = secondClass;
     }
 
 }

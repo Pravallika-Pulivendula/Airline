@@ -33,7 +33,7 @@ public class SearchService {
         }
         Arrays.sort(directoryListing);
         List<Flight> flightData;
-        flightData = data.filterData(from, to, departureDate, noOfPassengers);
+        flightData = data.filterData(from, to, departureDate);
         flightData = flightData.stream().filter(flight -> flight.getSeatType(ClassType.valueOf(classType)).getAvailableSeats() >= noOfPassengers).collect(Collectors.toList());
         return flightData;
     }
