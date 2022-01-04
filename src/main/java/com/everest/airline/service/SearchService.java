@@ -18,19 +18,17 @@ import java.util.stream.Collectors;
 public class SearchService {
     @Autowired
     FileHandler data;
+    @Autowired
+    ValidateInput validateInput;
+    public static final String FILEPATH = "src/main/java/com/everest/airline/flights";
 
-    File directory = new File("src/main/java/com/everest/airline/flights");
-    File[] directoryListing = directory.listFiles();
-    ValidateInput validateInput = new ValidateInput();
 
     public List<Flight> searchFlights(String from, String to, String departureDate, String classType, int noOfPassengers) throws IOException {
+        File directory = new File(FILEPATH);
+        File[] directoryListing = directory.listFiles();
         if (validateInput.isStringValid(from) || validateInput.isStringValid(to) || validateInput.isStringValid(departureDate) || validateInput.areStringsEqual(from, to))
             throw new IllegalArgumentException("Arguments are invalid");
-        try {
-            if (directoryListing == null) throw new FileNotFoundException("No files found");
-        }catch (IOException ioException){
-            ioException.printStackTrace();
-        }
+        if (directoryListing == null) throw new FileNotFoundException("No files found");
         Arrays.sort(directoryListing);
         List<Flight> flightData;
         flightData = data.filterData(from, to, departureDate);
