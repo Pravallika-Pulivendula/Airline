@@ -39,11 +39,11 @@
     </tr>
     <tr>
         <td>Price per seat</td>
-        <td th:text="${flight.pricePerSeat}"></td>
+        <td th:text="${pricePerSeat}"></td>
     </tr>
     <tr>
         <td>Total Price</td>
-        <td th:text="${#numbers.formatDecimal(flight.pricePerSeat * noOfPassengers,0,2)}"></td>
+        <td th:text="${#numbers.formatDecimal(pricePerSeat * noOfPassengers,0,2)}"></td>
     </tr>
 </table>
 <br/>

@@ -20,15 +20,18 @@
         <th>[(${classType})] Class Seats Price</th>
         <th>Book Ticket</th>
         <tr th:each="flight:${flights}">
-            <td th:text="${flight.number}" id="number"></td>
+            <td th:text="${flight.number}"></td>
             <td th:text="${flight.source}"></td>
             <td th:text="${flight.destination}"></td>
             <td th:text="${flight.departTime}"></td>
             <td th:text="${flight.arrivalTime}"></td>
             <td th:text="${flight.getTotalAvailableSeats()}"></td>
             <td th:text="${flight.getAvailableClassTypeSeats(classType)}"></td>
-            <td th:text="${flight.pricePerSeat}"></td>
-            <td><form th:action="@{/{number}/{noOfPassengers}/{classType}/{pricePerSeat} (number = ${flight.number},noOfPassengers=${noOfPassengers},classType=${classType},pricePerSeat=${flight.pricePerSeat})}" method="post">
+            <td th:text="${flight.getPricePerSeat(classType)}"></td>
+            <td><form th:action="@{/book}" method="post">
+                <input type="hidden" th:value="${flight.number}" id="number" name="number">
+                <input type="hidden" th:value="${noOfPassengers}" id="noOfPassengers" name="noOfPassengers">
+                <input type="hidden" th:value="${classType}" id="classType" name="classType">
                 <input type="submit" value="Book ticket">
             </form></td>
         </tr>

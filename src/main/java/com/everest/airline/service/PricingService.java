@@ -13,14 +13,12 @@ public class PricingService {
         final double THIRTY_FIVE_PERCENT_EXTRA = 0.35;
         final double FIFTY_PERCENT_EXTRA = 0.5;
 
-        if (noOfSeats > totalSeats - (totalSeats * THIRTY_PERCENT) && noOfSeats < totalSeats) return 0;
-        if (noOfSeats > totalSeats - (totalSeats * FIFTY_PERCENT) && noOfSeats < totalSeats - (totalSeats * THIRTY_PERCENT))
+        if (noOfSeats > totalSeats - (totalSeats * THIRTY_PERCENT)) return 0;
+        if (noOfSeats > totalSeats - (totalSeats * FIFTY_PERCENT))
             return (basePrice * TWENTY_PERCENT_EXTRA);
-        if (noOfSeats > totalSeats - (totalSeats * SEVENTY_FIVE_PERCENT) && noOfSeats < totalSeats - (totalSeats * FIFTY_PERCENT))
+        if (noOfSeats > totalSeats - (totalSeats * SEVENTY_FIVE_PERCENT))
             return (basePrice * THIRTY_FIVE_PERCENT_EXTRA);
-        if (noOfSeats < totalSeats - (totalSeats * SEVENTY_FIVE_PERCENT) && noOfSeats > 0)
-            return (basePrice * FIFTY_PERCENT_EXTRA);
-        return 0;
+        return (basePrice * FIFTY_PERCENT_EXTRA);
     }
 
     public double calculateChargeBasedOnDays(long days) {
@@ -32,7 +30,6 @@ public class PricingService {
 
         if (days > TEN_DAYS_BEFORE && days <= FIFTEEN_DAYS_BEFORE) return 0;
         if (days < TEN_DAYS_BEFORE && days > THREE_DAYS_BEFORE) return (days * TWO_PERCENT_EXTRA);
-        if (days < THREE_DAYS_BEFORE && days > 0) return (days * TEN_PERCENT_EXTRA);
-        return 0;
+        return (days * TEN_PERCENT_EXTRA);
     }
 }

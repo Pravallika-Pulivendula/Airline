@@ -1,11 +1,11 @@
 package com.everest.airline.model;
 
-public class FlightSeatType {
+public class FlightClass {
     private final int totalSeats;
     private int availableSeats;
     private final double seatBasePrice;
 
-    public FlightSeatType(int totalSeats, int availableSeats, double seatBasePrice) {
+    public FlightClass(int totalSeats, int availableSeats, double seatBasePrice) {
         this.totalSeats = totalSeats;
         this.availableSeats = availableSeats;
         this.seatBasePrice = seatBasePrice;
@@ -23,7 +23,7 @@ public class FlightSeatType {
         return seatBasePrice;
     }
 
-    public void updateSeats(int noOfPassengers) {
+    public void reserveSeats(int noOfPassengers) {
         this.availableSeats = this.availableSeats - noOfPassengers;
     }
 }
