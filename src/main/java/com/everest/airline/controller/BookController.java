@@ -16,14 +16,15 @@ public class BookController {
     FileHandler fileHandler;
 
     @PostMapping(value = "/book")
-    public String booking(int noOfPassengers, long number, String classType, Model model) throws IOException {
+    public String bookFlight(int noOfPassengers, long number, String classType, Model model) throws IOException {
         Flight flight = fileHandler.getData(number);
+        double pricePerSeat = flight.getPricePerSeat(classType);
         flight.reserveSeats(noOfPassengers, ClassType.valueOf(classType));
         fileHandler.writeData(number, flight.toString());
         model.addAttribute("flights", flight);
         model.addAttribute("noOfPassengers", noOfPassengers);
         model.addAttribute("classType", classType);
-        model.addAttribute("pricePerSeat", flight.getPricePerSeat(classType));
+        model.addAttribute("pricePerSeat", pricePerSeat);
         return "book";
     }
 }
