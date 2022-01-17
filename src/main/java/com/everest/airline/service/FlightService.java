@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 
 @Component
@@ -47,13 +49,15 @@ public class FlightService {
         return number;
     }
 
-    public void updateFlight(long number,Flight newFlight) throws IOException {
+    public void updateFlight(long number, Flight newFlight) throws IOException {
         newFlight.setNumber(number);
         fileHandler.writeData(number, newFlight.toString());
     }
 
-    public void deleteFlight(long number)
-    {
-        
+    public void deleteFlight(long number) throws IOException {
+        File directory = new File(filePath);
+        File[] files = directory.listFiles((File pathname) -> pathname.getName().equals(String.valueOf(number)));
+        if (files == null) throw new FileNotFoundException("No such files");
+        Files.delete(Path.of(files[0].getPath()));
     }
 }
