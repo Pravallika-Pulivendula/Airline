@@ -57,7 +57,9 @@ public class FileHandler {
         } catch (FileNotFoundException fileNotFoundException) {
             throw new FileNotFoundException(ERROR_MESSAGE);
         }
-        return new Flight(flightDetails[1], flightDetails[2], LocalDate.parse(flightDetails[3]), LocalTime.parse(flightDetails[4]), LocalTime.parse(flightDetails[5]), new FlightClass(50, Integer.parseInt(flightDetails[7]), Double.parseDouble(flightDetails[8])), new FlightClass(10, Integer.parseInt(flightDetails[9]), Double.parseDouble(flightDetails[10])), new FlightClass(30, Integer.parseInt(flightDetails[11]), Double.parseDouble(flightDetails[12])), pricingService, validator);
+        Flight flight =  new Flight(flightDetails[1], flightDetails[2], LocalDate.parse(flightDetails[3]), LocalTime.parse(flightDetails[4]), LocalTime.parse(flightDetails[5]), new FlightClass(50, Integer.parseInt(flightDetails[6]), Double.parseDouble(flightDetails[7])), new FlightClass(10, Integer.parseInt(flightDetails[8]), Double.parseDouble(flightDetails[9])), new FlightClass(30, Integer.parseInt(flightDetails[10]), Double.parseDouble(flightDetails[11])), pricingService, validator);
+        flight.setNumber(number);
+        return flight;
     }
 
     public Flight getData(long number) {
