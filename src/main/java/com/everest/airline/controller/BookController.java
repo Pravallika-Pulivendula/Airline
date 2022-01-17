@@ -14,20 +14,20 @@ import java.io.IOException;
 @Controller
 public class BookingController {
     @Autowired
-    FileHandler data;
+    FileHandler fileHandler;
 
     @RequestMapping(value = "/{number}/{noOfPassengers}/{classType}/{pricePerSeat}")
     public String book(@PathVariable("number") long number, @PathVariable("noOfPassengers") int noOfPassengers, @PathVariable("classType") String classType, @PathVariable("pricePerSeat") double pricePerSeat) throws IOException {
-        Flight flight = data.getDataFromFile(number);
+        Flight flight = fileHandler.getData(number);
         flight.updateSeats(noOfPassengers, ClassType.valueOf(classType));
-        data.writeDataToFile(number, flight.toString());
+        fileHandler.writeData(number, flight.toString());
         flight.updatePricePerSeat(classType);
         return "redirect:/book/{number}/{noOfPassengers}/{classType}/{pricePerSeat}";
     }
 
     @RequestMapping(value = "/book/{number}/{noOfPassengers}/{classType}/{pricePerSeat}")
     public String bookTicket(@PathVariable("number") long number, @PathVariable("noOfPassengers") int noOfPassengers, @PathVariable("classType") String classType, @PathVariable("pricePerSeat") double pricePerSeat, Model model) {
-        Flight flight = data.getDataFromFile(number);
+        Flight flight = fileHandler.getData(number);
         flight.setPricePerSeat(pricePerSeat);
         model.addAttribute("flights", flight);
         model.addAttribute("noOfPassengers", noOfPassengers);

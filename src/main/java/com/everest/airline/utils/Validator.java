@@ -7,7 +7,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 
 @Component
-public class ValidateInput {
+public class Validator {
 
     public boolean isStringValid(String string) {
         return string == null || string.trim().isEmpty();
