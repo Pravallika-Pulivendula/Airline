@@ -38,6 +38,7 @@ public class Flight {
     }
 
     public Flight() {
+        setValidator();
     }
 
     @Override
@@ -82,6 +83,10 @@ public class Flight {
 
     public void setDepartureDate(String departureDate) {
         this.departureDate = validator.parseInputDate(departureDate);
+    }
+
+    public void setValidator() {
+        this.validator = new Validator();
     }
 
     public void setDepartTime(String departTime) {
