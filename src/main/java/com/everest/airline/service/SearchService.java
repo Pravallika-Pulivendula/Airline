@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @Component
 public class SearchService {
     @Autowired
-    FileHandler data;
+    FileHandler fileHandler;
     @Autowired
     Validator validator;
     @Value("${FILEPATH}")
@@ -32,7 +32,7 @@ public class SearchService {
         if (directoryListing == null) throw new FileNotFoundException("No files found");
         Arrays.sort(directoryListing);
         List<Flight> flightData;
-        flightData = data.filterData(from, to, departureDate);
+        flightData = fileHandler.filterData(from, to, departureDate);
         flightData = flightData.stream().filter(flight -> flight.getClassType(ClassType.valueOf(classType)).getAvailableSeats() >= noOfPassengers).collect(Collectors.toList());
         return flightData;
     }
