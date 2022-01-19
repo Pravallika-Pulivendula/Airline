@@ -1,13 +1,14 @@
 package com.everest.airline.controller;
 
 import com.everest.airline.model.Flight;
+import com.everest.airline.service.pricingservice.PricingBasedOnDays;
+import com.everest.airline.service.pricingservice.PricingBasedOnSeats;
 import com.everest.airline.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -18,6 +19,10 @@ import java.util.ArrayList;
 public class SearchController {
     @Autowired
     SearchService searchService;
+    @Autowired
+    PricingBasedOnSeats pricingBasedOnSeats;
+    @Autowired
+    PricingBasedOnDays pricingBasedOnDays;
 
     @GetMapping(value = "/")
     public String home(Model model) {
@@ -33,6 +38,8 @@ public class SearchController {
         model.addAttribute("flights", flights);
         model.addAttribute("noOfPassengers", noOfPassengers);
         model.addAttribute("classType", classType);
+        model.addAttribute("pricingBasedOnSeats", pricingBasedOnSeats);
+        model.addAttribute("pricingBasedOnDays", pricingBasedOnDays);
         return "search";
     }
 }
