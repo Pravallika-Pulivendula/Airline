@@ -27,7 +27,7 @@
             <td th:text="${flight.arrivalTime}"></td>
             <td th:text="${flight.getTotalAvailableSeats()}"></td>
             <td th:text="${flight.getAvailableClassTypeSeats(classType)}"></td>
-            <td th:text="${flight.getPricePerSeat(classType)}"></td>
+            <td th:text="${flight.getPricePerSeat(classType,pricingBasedOnSeats,pricingBasedOnDays)}"></td>
             <td><form th:action="@{/book}" method="post">
                 <input type="hidden" th:value="${flight.number}" id="number" name="number">
                 <input type="hidden" th:value="${noOfPassengers}" id="noOfPassengers" name="noOfPassengers">
