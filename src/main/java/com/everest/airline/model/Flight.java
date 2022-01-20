@@ -1,6 +1,8 @@
 package com.everest.airline.model;
 
 import com.everest.airline.enums.ClassType;
+import com.everest.airline.service.PricingBasedOnDay;
+import com.everest.airline.service.PricingBasedOnSeat;
 import com.everest.airline.service.PricingService;
 import com.everest.airline.utils.Validator;
 
@@ -8,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.EnumMap;
+import java.util.Map;
 
 public class Flight {
     private Long number;
@@ -21,7 +24,7 @@ public class Flight {
     FlightClass second;
     PricingService pricingService;
     Validator validator;
-    EnumMap<ClassType, FlightClass> flightClass;
+    Map<ClassType, FlightClass> flightClass;
 
     public Flight(String source, String destination, LocalDate departureDate, LocalTime departTime, LocalTime arrivalTime, FlightClass economicClass, FlightClass firstClass, FlightClass secondClass, PricingService pricingService, Validator validator) {
         this.source = source;
@@ -61,12 +64,12 @@ public class Flight {
         getClassType(classType).reserveSeats(noOfPassengers);
     }
 
-    public double getPricePerSeat(String classType) {
+    public double getPricePerSeat(String classType, PricingBasedOnSeat pricingBasedOnSeat, PricingBasedOnDay pricingBasedOnDay) {
         double basePrice = getSeatTypeBasePrice(ClassType.valueOf(classType));
         int totalAvailableSeats = getAvailableClassTypeSeats(ClassType.valueOf(classType));
         int totalSeats = getTotalClassTypeSeats(ClassType.valueOf(classType));
         long days = Math.abs(ChronoUnit.DAYS.between(getDepartureDate(), LocalDate.now()));
-        return basePrice + Math.abs(pricingService.calculateChargeBasedOnSeatType(basePrice, totalSeats, totalAvailableSeats)) + Math.abs(pricingService.calculateChargeBasedOnDays(days));
+        return basePrice + Math.abs(pricingBasedOnSeat.getCharge(basePrice,totalSeats,totalAvailableSeats)) + Math.abs(pricingBasedOnDay.getCharge(days));
     }
 
     public void setNumber(long number) {

@@ -2,8 +2,8 @@ package com.everest.airline.controller;
 
 import com.everest.airline.enums.ClassType;
 import com.everest.airline.model.Flight;
-import com.everest.airline.service.pricingservice.PricingBasedOnDays;
-import com.everest.airline.service.pricingservice.PricingBasedOnSeats;
+import com.everest.airline.service.PricingBasedOnDay;
+import com.everest.airline.service.PricingBasedOnSeat;
 import com.everest.airline.utils.FileHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -19,15 +19,15 @@ public class BookController {
     FileHandler fileHandler;
     @Autowired
     @Qualifier(value = "Seats")
-    PricingBasedOnSeats pricingBasedOnSeats;
+    PricingBasedOnSeat pricingBasedOnSeat;
     @Autowired
     @Qualifier(value = "Days")
-    PricingBasedOnDays pricingBasedOnDays;
+    PricingBasedOnDay pricingBasedOnDay;
 
     @PostMapping(value = "/book")
     public String bookFlight(int noOfPassengers, long number, String classType, Model model) throws IOException {
         Flight flight = fileHandler.getData(number);
-        double pricePerSeat = flight.getPricePerSeat(classType, pricingBasedOnSeats, pricingBasedOnDays);
+        double pricePerSeat = flight.getPricePerSeat(classType, pricingBasedOnSeat, pricingBasedOnDay);
         flight.reserveSeats(noOfPassengers, ClassType.valueOf(classType));
         fileHandler.writeData(number, flight.toString());
         model.addAttribute("flights", flight);

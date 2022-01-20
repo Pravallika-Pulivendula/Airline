@@ -17,14 +17,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Component
-public class FileHandler {
+public class FileHandler implements Comparator<Flight> {
     @Value("${FILEPATH}")
     private String path;
     private static final String ERROR_MESSAGE = "File not found";
@@ -57,7 +55,7 @@ public class FileHandler {
         } catch (FileNotFoundException fileNotFoundException) {
             throw new FileNotFoundException(ERROR_MESSAGE);
         }
-        Flight flight =  new Flight(flightDetails[1], flightDetails[2], LocalDate.parse(flightDetails[3]), LocalTime.parse(flightDetails[4]), LocalTime.parse(flightDetails[5]), new FlightClass(50, Integer.parseInt(flightDetails[6]), Double.parseDouble(flightDetails[7])), new FlightClass(10, Integer.parseInt(flightDetails[8]), Double.parseDouble(flightDetails[9])), new FlightClass(30, Integer.parseInt(flightDetails[10]), Double.parseDouble(flightDetails[11])), pricingService, validator);
+        Flight flight = new Flight(flightDetails[1], flightDetails[2], LocalDate.parse(flightDetails[3]), LocalTime.parse(flightDetails[4]), LocalTime.parse(flightDetails[5]), new FlightClass(50, Integer.parseInt(flightDetails[6]), Double.parseDouble(flightDetails[7])), new FlightClass(10, Integer.parseInt(flightDetails[8]), Double.parseDouble(flightDetails[9])), new FlightClass(30, Integer.parseInt(flightDetails[10]), Double.parseDouble(flightDetails[11])), pricingService, validator);
         flight.setNumber(number);
         return flight;
     }
@@ -82,11 +80,18 @@ public class FileHandler {
                 }
             });
         }
+        flights.sort(new FileHandler());
         return flights;
+
     }
 
     public List<Flight> filterData(String from, String to, String departureDate) throws IOException {
         flightData = readAllData().stream().filter(flight -> flight.getSource().equals(from) && flight.getDestination().equals(to) && flight.getDepartureDate().toString().equals(departureDate)).collect(Collectors.toList());
         return flightData;
+    }
+
+    @Override
+    public int compare(Flight flight1, Flight flight2) {
+        return flight1.getNumber().compareTo(flight2.getNumber());
     }
 }
