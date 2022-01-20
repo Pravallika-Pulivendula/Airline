@@ -1,4 +1,4 @@
-package com.everest.airline.service;
+package com.everest.airline.service.pricingrule;
 
 import java.util.function.Supplier;
 

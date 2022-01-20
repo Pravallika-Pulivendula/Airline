@@ -1,4 +1,4 @@
-package com.everest.airline.service;
+package com.everest.airline.service.pricingrule;
 
 import com.everest.airline.enums.ExtraChargeTypeForDays;
 import org.springframework.context.annotation.Primary;
