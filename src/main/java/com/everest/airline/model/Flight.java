@@ -1,9 +1,9 @@
 package com.everest.airline.model;
 
 import com.everest.airline.enums.ClassType;
-import com.everest.airline.service.PricingBasedOnDay;
-import com.everest.airline.service.PricingBasedOnSeat;
-import com.everest.airline.service.PricingService;
+import com.everest.airline.service.pricingrule.PricingBasedOnDay;
+import com.everest.airline.service.pricingrule.PricingBasedOnSeat;
+import com.everest.airline.service.pricingrule.PricingService;
 import com.everest.airline.utils.Validator;
 
 import java.time.LocalDate;
@@ -26,7 +26,8 @@ public class Flight {
     Validator validator;
     Map<ClassType, FlightClass> flightClass;
 
-    public Flight(String source, String destination, LocalDate departureDate, LocalTime departTime, LocalTime arrivalTime, FlightClass economicClass, FlightClass firstClass, FlightClass secondClass, PricingService pricingService, Validator validator) {
+    public Flight(long number, String source, String destination, LocalDate departureDate, LocalTime departTime, LocalTime arrivalTime, FlightClass economicClass, FlightClass firstClass, FlightClass secondClass, PricingService pricingService, Validator validator) {
+        this.number = number;
         this.source = source;
         this.destination = destination;
         this.departureDate = departureDate;
@@ -69,7 +70,7 @@ public class Flight {
         int totalAvailableSeats = getAvailableClassTypeSeats(ClassType.valueOf(classType));
         int totalSeats = getTotalClassTypeSeats(ClassType.valueOf(classType));
         long days = Math.abs(ChronoUnit.DAYS.between(getDepartureDate(), LocalDate.now()));
-        return basePrice + Math.abs(pricingBasedOnSeat.getCharge(basePrice,totalSeats,totalAvailableSeats)) + Math.abs(pricingBasedOnDay.getCharge(days));
+        return basePrice + Math.abs(pricingBasedOnSeat.getExtraPrice(basePrice, totalSeats, totalAvailableSeats)) + Math.abs(pricingBasedOnDay.getExtraPrice(days));
     }
 
     public void setNumber(long number) {
@@ -150,5 +151,17 @@ public class Flight {
 
     public void setSecond(FlightClass second) {
         this.second = second;
+    }
+
+    public FlightClass getEconomic() {
+        return economic;
+    }
+
+    public FlightClass getFirst() {
+        return first;
+    }
+
+    public FlightClass getSecond() {
+        return second;
     }
 }

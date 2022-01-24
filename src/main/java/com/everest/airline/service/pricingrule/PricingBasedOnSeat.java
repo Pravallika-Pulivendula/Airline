@@ -1,34 +1,16 @@
 package com.everest.airline.service.pricingrule;
 
-import com.everest.airline.enums.ExtraChargeTypeForDays;
+import com.everest.airline.enums.ExtraChargeTypeForSeats;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
 @Component("Seats")
 @Primary
 public class PricingBasedOnSeat implements PricingService {
-
-    public double getCharge(double basePrice, int totalSeats, int availableSeats) {
-        Map<ExtraChargeTypeForDays, PricingRule<Double>> extraChargePercentRuleMap = setPercentRuleMap(basePrice, totalSeats, availableSeats);
-        return Stream.of(ExtraChargeTypeForDays.values())
-                .filter(extraChargeTypeForDays -> extraChargePercentRuleMap.get(extraChargeTypeForDays).getCondition().get())
-                .map(extraChargeTypeForDays -> extraChargePercentRuleMap.get(extraChargeTypeForDays).getProcess().get())
-                .findFirst()
-                .orElse((double) 0);
-    }
-
-    Map<ExtraChargeTypeForDays, PricingRule<Double>> setPercentRuleMap(double basePrice, int totalSeats, int availableSeats) {
-        Map<ExtraChargeTypeForDays, PricingRule<Double>> percentRuleMap = new HashMap<>();
-        percentRuleMap.put(ExtraChargeTypeForDays.ZERO_PERCENT, zeroPercent(basePrice, totalSeats, availableSeats));
-        percentRuleMap.put(ExtraChargeTypeForDays.TWENTY_PERCENT, twentyPercent(basePrice, totalSeats, availableSeats));
-        percentRuleMap.put(ExtraChargeTypeForDays.THIRTY_FIVE_PERCENT, thirtyFivePercent(basePrice, totalSeats, availableSeats));
-        percentRuleMap.put(ExtraChargeTypeForDays.FIFTY_PERCENT, fiftyPercent(basePrice, totalSeats, availableSeats));
-        return percentRuleMap;
-    }
 
     PricingRule<Double> zeroPercent(double basePrice, int totalSeats, int availableSeats) {
         return createPricingRule(
@@ -56,5 +38,23 @@ public class PricingBasedOnSeat implements PricingService {
                 () -> (availableSeats <= (totalSeats - totalSeats * 0.75) && availableSeats > 0),
                 () -> basePrice * 0.50
         );
+    }
+
+    public double getExtraPrice(double basePrice, int totalSeats, int availableSeats) {
+        Map<ExtraChargeTypeForSeats, PricingRule<Double>> extraChargePercentRuleMap = setPercentRuleMap(basePrice, totalSeats, availableSeats);
+        return Stream.of(ExtraChargeTypeForSeats.values())
+                .filter(extraChargeTypeForSeats -> extraChargePercentRuleMap.get(extraChargeTypeForSeats).getCondition().get())
+                .map(extraChargeTypeForSeats -> extraChargePercentRuleMap.get(extraChargeTypeForSeats).getProcess().get())
+                .findFirst()
+                .orElse((double) 0);
+    }
+
+    Map<ExtraChargeTypeForSeats, PricingRule<Double>> setPercentRuleMap(double basePrice, int totalSeats, int availableSeats) {
+        EnumMap<ExtraChargeTypeForSeats, PricingRule<Double>> percentRuleMap = new EnumMap<>(ExtraChargeTypeForSeats.class);
+        percentRuleMap.put(ExtraChargeTypeForSeats.ZERO_PERCENT, zeroPercent(basePrice, totalSeats, availableSeats));
+        percentRuleMap.put(ExtraChargeTypeForSeats.TWENTY_PERCENT, twentyPercent(basePrice, totalSeats, availableSeats));
+        percentRuleMap.put(ExtraChargeTypeForSeats.THIRTY_FIVE_PERCENT, thirtyFivePercent(basePrice, totalSeats, availableSeats));
+        percentRuleMap.put(ExtraChargeTypeForSeats.FIFTY_PERCENT, fiftyPercent(basePrice, totalSeats, availableSeats));
+        return percentRuleMap;
     }
 }

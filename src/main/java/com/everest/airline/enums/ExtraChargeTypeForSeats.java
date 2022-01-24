@@ -1,7 +1,8 @@
 package com.everest.airline.enums;
 
 public enum ExtraChargeTypeForSeats {
-    NO_CHARGE,
-    TWO_PERCENT,
-    TEN_PERCENT;
+    ZERO_PERCENT,
+    TWENTY_PERCENT,
+    THIRTY_FIVE_PERCENT,
+    FIFTY_PERCENT;
 }
